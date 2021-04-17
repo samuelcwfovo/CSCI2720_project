@@ -5,7 +5,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
   filename: "./index.html"
 });
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.jsx",
   output: { // NEW
     path: path.join(__dirname, 'dist'),
     filename: "[name].js"
@@ -19,7 +19,23 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
-      }
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {},
+          },
+        ],
+      },
+
     ]
-  }
+  },
+  watch: true,
 };

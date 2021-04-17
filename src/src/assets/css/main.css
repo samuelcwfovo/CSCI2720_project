@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+}
+
+
+#bg {
+    background-image: url("../images/login_background_0.jpg");
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 1;
+    display: inline-block;
+
+}
+
+#filter {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+
+    background-image: radial-gradient(#000000b6, #ffffff00);
+
+    /* background-image: linear-gradient(to top, rgba(19, 21, 25, 0.5), rgba(19, 21, 25, 0.5)), url("overlay.png"); */
+    /* background-image: url("overlay.png"); */
+    /* background-color: rgba(19, 21, 25, 0.5); */
+}
+
+.blur {
+    backdrop-filter: blur(10px);
+}
+
+#permId {
+    font-size: 10rem;
+    color: white;
+    border: 10px white solid;
+    border-radius: 100%;
+
+}
