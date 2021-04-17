@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    overflow: hidden;
 }
 
 
@@ -23,7 +24,7 @@ body {
     align-items: center;
 
     background-image: radial-gradient(#000000b6, #ffffff00);
-
+    transition: ease 500ms all;
     /* background-image: linear-gradient(to top, rgba(19, 21, 25, 0.5), rgba(19, 21, 25, 0.5)), url("overlay.png"); */
     /* background-image: url("overlay.png"); */
     /* background-color: rgba(19, 21, 25, 0.5); */
