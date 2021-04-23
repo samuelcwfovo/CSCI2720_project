@@ -1,14 +1,111 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
+import { useHistory } from "react-router-dom";
+
 import '.././assets/css/main.css';
+import { AuthContext } from '../context/ControlContext.jsx';
 
 import { PermIdentity, ArrowBack, Person, Lock } from '@material-ui/icons';
 
 
 const LoginForm = () => {
     const [login, setLogin] = useState(true);
+    const authUtil = useContext(AuthContext);
+    let history = useHistory();
 
     const onArrowClick = () => {
         setLogin(!login)
+    }
+
+    const Login = () => {
+        let userName = document.querySelector("#login-username")
+        let password = document.querySelector("#login-password")
+
+        //reset custom valid
+        userName.setCustomValidity("")
+
+        if (document.querySelector('#login-form').reportValidity()) {
+            fetch('api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userName: userName.value,
+                    password: password.value
+                })
+            })
+                .then(data => data.json())
+                .then(res => {
+                    if (res.code === 0) {
+                        console.log("server error")
+                        console.log(res)
+                    }
+                    if (res.code === 1) {
+                        userName.setCustomValidity("username / password incorrect")
+                        userName.reportValidity()
+                    }
+
+                    if (res.code === 2) {
+                        sessionStorage.setItem('userId', res.userInfo.userId);
+                        sessionStorage.setItem('userName', res.userInfo.userName);
+                        sessionStorage.setItem('admin', res.userInfo.admin);
+                        authUtil.setAuth(true)
+                        history.push("/");
+                    }
+
+                })
+        }
+    }
+
+    const Signup = () => {
+        let userName = document.querySelector("#signup-username")
+        let password = document.querySelector("#signup-password")
+        let password2 = document.querySelector("#signup-second-password")
+
+        //reset if it seted before
+        password.setCustomValidity("")
+        userName.setCustomValidity("")
+
+        if (document.querySelector('#signup-form').reportValidity()) {
+            if (password.value !== password2.value) {
+                password.setCustomValidity("password not match with comfirm password")
+                password.reportValidity()
+                return
+            }
+
+            fetch('api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userName: userName.value,
+                    password: password.value
+                })
+            })
+                .then(data => data.json())
+                .then(res => {
+                    if (res.code === 0) {
+                        console.log("server error")
+                        console.log(res)
+                    }
+                    if (res.code === 1) {
+                        userName.setCustomValidity("username already in use.")
+                        userName.reportValidity()
+                    }
+
+                    if (res.code === 2) {
+                        sessionStorage.setItem('userId', res.userInfo.userId);
+                        sessionStorage.setItem('userName', res.userInfo.userName);
+                        sessionStorage.setItem('admin', res.userInfo.admin);
+                        authUtil.setAuth(true)
+                        history.push("/");
+                    }
+                })
+
+
+        }
+
     }
 
     return (
@@ -36,21 +133,19 @@ const LoginForm = () => {
                         <div className="section text-center mt-5 effect-3d">
                             <h4 className="mb-4 ">LOG IN</h4>
                         </div>
-                        <div className="input-group py-3 mx-3 width-auto effect-3d">
-                            <span className="input-group-text" id="inputGroupPrepend2"><Person /></span>
-                            <input type="text" className="form-control " id="validationDefaultUsername"
-                                placeholder="Username" aria-describedby="inputGroupPrepend2" required />
-                        </div>
-                        <div className="input-group py-3 mx-3 width-auto effect-3d">
-                            <span className="input-group-text" id="inputGroupPrepend2"><Lock /></span>
-                            <input type="password" className="form-control  " id="validationDefaultUsername"
-                                placeholder="Password" aria-describedby="inputGroupPrepend2" required />
-                        </div>
-
-                        <div className="py-5 mx-3 effect-3d">
-                            <button type="button" className="btn btn-outline-light">LOG IN</button>
-
-                        </div>
+                        <form id="login-form">
+                            <div className="input-group py-3 mx-3 width-auto effect-3d">
+                                <span className="input-group-text"><Person /></span>
+                                <input type="text" className="form-control" id="login-username" placeholder="Username" required onInput={(e) => e.target.setCustomValidity('')} />
+                            </div>
+                            <div className="input-group py-3 mx-3 width-auto effect-3d">
+                                <span className="input-group-text"><Lock /></span>
+                                <input type="password" className="form-control" id="login-password" placeholder="Password" required />
+                            </div>
+                            <div className="py-5 mx-3 effect-3d">
+                                <button type="button" className="btn btn-outline-light" onClick={Login}>LOG IN</button>
+                            </div>
+                        </form>
                     </div>
 
                     <div className={
@@ -59,26 +154,26 @@ const LoginForm = () => {
                         <div className="section text-center mt-5 effect-3d">
                             <h4 className="mb-1 ">SIGN UP</h4>
                         </div>
-                        <div className="input-group py-3 mx-3 width-auto effect-3d">
-                            <span className="input-group-text" id="inputGroupPrepend2"><Person /></span>
-                            <input type="text" className="form-control " id="validationDefaultUsername"
-                                placeholder="Username" aria-describedby="inputGroupPrepend2" required />
-                        </div>
-                        <div className="input-group py-3 mx-3 width-auto effect-3d">
-                            <span className="input-group-text" id="inputGroupPrepend2"><Lock /></span>
-                            <input type="password" className="form-control  " id="validationDefaultUsername"
-                                placeholder="Password" aria-describedby="inputGroupPrepend2" required />
-                        </div>
-                        <div className="input-group py-3 pb-4 mx-3 width-auto effect-3d">
-                            <span className="input-group-text" id="inputGroupPrepend2"><Lock /></span>
-                            <input type="password" className="form-control  " id="validationDefaultUsername"
-                                placeholder="Comfirm Password" aria-describedby="inputGroupPrepend2" required />
-                        </div>
 
-                        <div className="py-3 mx-3">
-                            <button type="button" className="btn btn-outline-light">SIGN UP</button>
+                        <form id="signup-form">
+                            <div className="input-group py-3 mx-3 width-auto effect-3d">
+                                <span className="input-group-text" ><Person /></span>
+                                <input type="text" className="form-control" id="signup-username" placeholder="Username" required onInput={(e) => e.target.setCustomValidity('')} />
+                            </div>
+                            <div className="input-group py-3 mx-3 width-auto effect-3d">
+                                <span className="input-group-text"><Lock /></span>
+                                <input type="password" className="form-control" id="signup-password" placeholder="Password" required onInput={(e) => e.target.setCustomValidity('')} />
+                            </div>
+                            <div className="input-group py-3 pb-4 mx-3 width-auto effect-3d">
+                                <span className="input-group-text"><Lock /></span>
+                                <input type="password" className="form-control" id="signup-second-password" placeholder="Comfirm Password" required />
+                            </div>
 
-                        </div>
+                            <div className="py-3 mx-3">
+                                <button type="button" className="btn btn-outline-light" onClick={Signup}>SIGN UP</button>
+
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -88,17 +183,45 @@ const LoginForm = () => {
 }
 
 
-const Login = () => {
+const Login = (props) => {
     const [hovered, setHovered] = useState(false);
     const [clicked, setClicked] = useState(false);
 
-    useEffect(() => {
+    const authUtil = useContext(AuthContext);
+    let history = useHistory();
+
+
+    useLayoutEffect(() => {
         document.body.classList.add('bg-login');
+        backgroundLogin();
+
         return () => {
             document.body.classList.remove('bg-login');
         };
-    });
+    }, []);
 
+    const backgroundLogin = () => {
+        fetch('api/auth/token', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 1) {
+                    console.log("token login fail", res)
+                }
+                if (res.code === 2) {
+                    sessionStorage.setItem('userId', res.userInfo.userId);
+                    sessionStorage.setItem('userName', res.userInfo.userName);
+                    sessionStorage.setItem('admin', res.userInfo.admin);
+                    authUtil.setAuth(true)
+                    history.push("/");
+                }
+            })
+    }
 
     const onHover = () => {
         setHovered(true)
@@ -138,6 +261,7 @@ const Login = () => {
         </div>
     )
 }
+
 
 export default Login;
 
