@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
-import '.././assets/css/main.css';
+import '.././assets/css/login.css';
 import { AuthContext } from '../context/ControlContext.jsx';
 
 import { PermIdentity, ArrowBack, Person, Lock } from '@material-ui/icons';

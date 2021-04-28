@@ -27,9 +27,9 @@ const App = () => {
                         <Loginboard />
                     </Route>
 
-                    <PrivateRoute exact path="/">
+                    <Route exact path="/">
                         <Dashboard />
-                    </PrivateRoute>
+                    </Route>
 
                     <PrivateRoute exact path="/dashboard">
                         <Dashboard />
