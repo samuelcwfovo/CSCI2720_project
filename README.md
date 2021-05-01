@@ -54,3 +54,4 @@ Samuel: Initial upload.<br><br>
 Samuel: Completed Login and Sign Up pages.<br><br>
 Samuel: Initialized Main page.<br><br>
 Ray: Created README.md.<br><br>
+Anson: Uploaded module: retrive-hospital-data.js
