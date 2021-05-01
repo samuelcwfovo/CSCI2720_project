@@ -23,8 +23,7 @@ const Dashboard = () => {
     const authUtil = useContext(AuthContext);
 
     let userName = sessionStorage.getItem('userName');
-    let isAdmin = sessionStorage.getItem('admin');
-    isAdmin = isAdmin == 'true' ? true : false;
+    let isAdmin = sessionStorage.getItem('admin') == 'true' ? true : false;
 
     let history = useHistory();
 
@@ -35,6 +34,8 @@ const Dashboard = () => {
         };
     }, []);
 
+
+    //delete cookie + set global auth false
     const Logout = () => {
         authUtil.setAuth(false);
         document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -101,27 +102,17 @@ const Dashboard = () => {
                     <div className="nav-list">
                         {
                             navItem.map((item, index) => {
-                                if (!item.adminOnly) {
+                                if (!item.adminOnly || isAdmin) {
                                     return (
                                         <div key={index} onClick={() => navMouseClick(index)}
                                             className={selected == index ? "nav-list-item active" : "nav-list-item"}>
-                                            <Link to={"/dashboard/"+item.link} className="nav-list-link" onClick={() => navListClick()}>
-                                                {<item.icon className="123" />}
+                                            <Link to={"/dashboard/" + item.link} className="nav-list-link" onClick={() => navListClick()}>
+                                                {<item.icon />}
                                                 {item.name}
                                             </Link>
                                         </div>
                                     )
-                                }else if (isAdmin){
-				    return (
-                                        <div key={index} onClick={() => navMouseClick(index)}
-                                            className={selected == index ? "nav-list-item active" : "nav-list-item"}>
-                                            <Link to={"/dashboard/"+item.link} className="nav-list-link" onClick={() => navListClick()}>
-                                                {<item.icon className="123" />}
-                                                {item.name}
-                                            </Link>
-                                        </div>
-                                    )
-				}
+                                }
                             })
                         }
                     </div>
@@ -140,7 +131,7 @@ const Dashboard = () => {
                     <div className="user-info d-flex flex-row align-items-center fs-5">
                         <span >{userName}</span>
                         <AccountCircle className="mx-3 fs-3" />
-                        <button type="button" className="btn btn-outline-info" onClick={()=> Logout()}>LOGOUT</button>
+                        <button type="button" className="btn btn-outline-info" onClick={() => Logout()}>LOGOUT</button>
                     </div>
                 </header>
 
@@ -150,7 +141,7 @@ const Dashboard = () => {
                     <Route path={"/dashboard/hospitals-manage"} component={HospitalsManage} />
                     <Route path={"/dashboard/users-manage"} component={UserManage} />
                     <Route exact path="/dashboard">
-                        <Redirect to='/dashboard/hospitals'/>
+                        <Redirect to='/dashboard/hospitals' />
                     </Route>
 
                 </Switch>
