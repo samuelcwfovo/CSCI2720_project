@@ -8,18 +8,12 @@
 3. Download the whole set from Github<br>
 4. Unzip the locate /src in your custom directory<br>
 5. Use cmd to cd to /*custom directory*/src<br>
-6. Initialize node.js by command: **npm init**
-7. Install express: **npm install express --save**
-8. Install mongoose: **npm install mongoose --save**
-9. Install webpack: **npm install webpack webpack-cli --save-dev**
-10. Install Google map for React: **npm install --save google-map-react**
-11. Install html-webpack-plugin: **npm i --save-dev html-webpack-plugin**
-12. Install packages needed yourself (if any)
-13. Replace the currect package.json and package-lock.json with the ones in the zip again (I do not know if this step is needed for you. I need to do it anyway)
-14. Build the html bundle: **npm run build** (need to run this command every time after you update codes in /src I guess)
-15. cd to /server and run the server by: **node index.js**
-16. Pray that the server is successfully setup
-17. Use browser: **http://127.0.0.1:3000/** to check whether it is successful
+6. Install all node module: **npm install**
+7. Development envirnment: **npm run dev**
+8. Production envirnment: **npm run build**
+9. cd to /server and run the server by: **node index.js** (only when you need to run it on Production envirnment and node server wasn't start)
+10. Pray that the server is successfully setup
+11. Use browser: **http://127.0.0.1:2060/** to check whether it is successful
 
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
