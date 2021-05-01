@@ -24,6 +24,7 @@ const Dashboard = () => {
 
     let userName = sessionStorage.getItem('userName');
     let isAdmin = sessionStorage.getItem('admin');
+    isAdmin = isAdmin == 'true' ? true : false;
 
     let history = useHistory();
 
@@ -110,8 +111,8 @@ const Dashboard = () => {
                                             </Link>
                                         </div>
                                     )
-                                }else if (isAdmin == true){
-									return (
+                                }else if (isAdmin){
+				    return (
                                         <div key={index} onClick={() => navMouseClick(index)}
                                             className={selected == index ? "nav-list-item active" : "nav-list-item"}>
                                             <Link to={"/dashboard/"+item.link} className="nav-list-link" onClick={() => navListClick()}>
@@ -120,7 +121,7 @@ const Dashboard = () => {
                                             </Link>
                                         </div>
                                     )
-								}
+				}
                             })
                         }
                     </div>
