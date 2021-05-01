@@ -9,7 +9,7 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 const HospitalsMap = () => {
     return (
         <div>
-            <h1>Hospitals Manage</h1>
+            <h1>Hospitals</h1>
             <div style={{ height: '100vh', width: '100%' }}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: GoogleMapKey }}
