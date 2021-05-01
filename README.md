@@ -12,7 +12,7 @@
 7. Install express: **npm install express --save**
 8. Install mongoose: **npm install mongoose --save**
 9. Install webpack: **npm install webpack webpack-cli --save-dev**
-10. Build the html bundle: **npm run build**
+10. Build the html bundle: **npm run build** (need to run this command every time after you update codes in /src I guess)
 11. cd to /server and run the server by: **node index.js**
 12. Pray that the server is successfully setup
 13. Use browser: **http://127.0.0.1:3000/** to check whether it is successful
