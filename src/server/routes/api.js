@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const saltRounds = 10;
 const accessTokenSecret = process.env.TOKENSECRET;
 
+const retrieveHospitalData = require('./modules/retrieve-hospital-data');
 
 router.use(bodyParser.json());
 router.use(cookieParser());
@@ -35,7 +36,18 @@ var UserSchema = Schema({
 UserSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 var UserModel = mongoose.model('User', UserSchema);
 
-
+var LocationSchema = Schema({
+    name: { type: String, unique: true, required: true },
+    latitude: { type: Number, required: true },
+	longitude: { type: Number, required: true },
+    comments: { 
+	  author: { type: String },
+	  comment: { type: String },
+	  creationDate: { type: Date }
+	}
+});
+LocationSchema.plugin(AutoIncrement, { inc_field: 'locId' });
+var LocationModel = mongoose.model('Location', LocationSchema);
 
 
 
