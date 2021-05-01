@@ -29,10 +29,10 @@
 - [ ] List all places in a table, and allow sorting of the table with one of the listed fields, linking to single places
 - [ ] Show all available places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
 - [ ] Search for places which contain keywords in one field chosen by the user which will result in a table of place results
-- [ ] A separate view for one single place, containing:
-      a. a map showing the place
-      b. the place details
-      c. user comments, where users can add new comments (non-threaded)
+- [ ] A separate view for one single place, containing:<br>
+      a. a map showing the place<br>
+      b. the place details<br>
+      c. user comments, where users can add new comments (non-threaded)<br>
       
 - [ ] Add place into a list of user’s favourite places, and see the list in another view (flexible implementation)
 - [ ] See the username in the top left/right of screen, and be able to log out
