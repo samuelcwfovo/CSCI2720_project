@@ -21,7 +21,6 @@
 16. cd to /server and run the server by: **node index.js**
 17. Pray that the server is successfully setup
 18. Use browser: **http://127.0.0.1:2060/** to check whether it is successful
-19. To create an admin account, Sign Up an account and then change its "admin" attribute of that account in your mongodb manually
 
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
