@@ -14,6 +14,7 @@
 9. cd to /server and run the server by: **node index.js** (only when you need to run it on Production envirnment and node server wasn't start)
 10. Pray that the server is successfully setup
 11. Use browser: **http://127.0.0.1:2060/** to check whether it is successful
+=======
 
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
@@ -33,7 +34,7 @@
       c. user comments, where users can add new comments (non-threaded)<br>
       
 - [ ] Add place into a list of user’s favourite places, and see the list in another view (flexible implementation)
-- [ ] See the username in the top left/right of screen, and be able to log out
+- [x] See the username in the top left/right of screen, and be able to log out **(Done by Samual)**
 
 #### Admin Actions
 - [ ] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app)

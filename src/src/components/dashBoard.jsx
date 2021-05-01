@@ -59,13 +59,13 @@ const Dashboard = () => {
         },
         {
             name: "Hospitals management",
-            adminOnly: false,
+            adminOnly: true,
             link: "hospitals-manage",
             icon: DescriptionOutlined
         },
         {
             name: "Users management",
-            adminOnly: false,
+            adminOnly: true,
             link: "users-manage",
             icon: PeopleAltOutlined
         },
@@ -110,7 +110,17 @@ const Dashboard = () => {
                                             </Link>
                                         </div>
                                     )
-                                }
+                                }else if (isAdmin == true){
+									return (
+                                        <div key={index} onClick={() => navMouseClick(index)}
+                                            className={selected == index ? "nav-list-item active" : "nav-list-item"}>
+                                            <Link to={"/dashboard/"+item.link} className="nav-list-link" onClick={() => navListClick()}>
+                                                {<item.icon className="123" />}
+                                                {item.name}
+                                            </Link>
+                                        </div>
+                                    )
+								}
                             })
                         }
                     </div>
