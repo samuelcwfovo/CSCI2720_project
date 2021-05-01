@@ -1,7 +1,7 @@
 # CSCI2720_project
 
 ## Setup Method
-**Ray: "The method was found by myself. Since I am bad (taken much time to figure out how to setup), the setup method might not be completed and correct. If there is any mistake, the initializer, Samuel or anyone else please feel free to correct the setup method. Thank you very much!"**<br>
+**Ray: "The method was found by myself. Since I am bad (taken much time to figure out how to setup), the setup method might not be completed and correct. If there is any mistake, the initializer, Samuel or anyone else please feel free to correct the setup method. Thank you very much!"**<br><br>
 **The setup is hosted locally on Windows. Ignore the setup method if you have already setup everything**<br>
 1. Install Node.js for Windows
 2. Install Mongodb for Windows
