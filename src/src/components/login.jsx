@@ -183,7 +183,7 @@ const LoginForm = () => {
 }
 
 
-const Login = (props) => {
+const Login = () => {
     const [hovered, setHovered] = useState(false);
     const [clicked, setClicked] = useState(false);
 
@@ -219,6 +219,7 @@ const Login = (props) => {
                     sessionStorage.setItem('admin', res.userInfo.admin);
                     authUtil.setAuth(true)
                     history.push("/");
+                    console.log('backgorund login')
                 }
             })
     }

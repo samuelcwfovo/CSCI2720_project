@@ -80,7 +80,7 @@ app.post('/api/auth/login', (req, res) => {
           const token = jwt.sign(payload, accessTokenSecret)
 
 
-          res.cookie('token', token, { maxAge: 900000, httpOnly: true });
+          res.cookie('token', token, { maxAge: 900000 });
           return res.status(200).json({ code: 2, userInfo: payload, description: "auth success." });
 
         } else {
@@ -89,7 +89,6 @@ app.post('/api/auth/login', (req, res) => {
       });
 
     })
-
 });
 
 
@@ -119,7 +118,7 @@ app.post('/api/auth/signup', (req, res) => {
 
         const token = jwt.sign(payload, accessTokenSecret)
 
-        res.cookie('token', token, { maxAge: 900000, httpOnly: true });
+        res.cookie('token', token, { maxAge: 900000});
         return res.status(201).json({ code: 2, userInfo: payload, description: "created" })
       })
     })
@@ -127,6 +126,7 @@ app.post('/api/auth/signup', (req, res) => {
 });
 
 app.get('/*', (req, res) => {
+  console.log(res)
   res.sendFile(HTML_FILE);
 });
 

@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import Loginboard from './components/login.jsx';
 import Dashboard from './components/dashBoard.jsx';
+
 import { AuthContext } from './context/ControlContext.jsx';
 
 
@@ -12,9 +13,9 @@ const App = () => {
 
     const [isAuth, setAuth] = useState(false);
 
-    useEffect(()=>{
-        console.log(isAuth)
+    useEffect(() => {
     })
+
     return (
         <AuthContext.Provider value={{
             isAuth: isAuth,
@@ -23,17 +24,15 @@ const App = () => {
             <BrowserRouter>
                 <Switch>
 
-                    <Route path="/login">
-                        <Loginboard />
-                    </Route>
+                    <Route path="/login" component={Loginboard} />
 
-                    <Route exact path="/">
-                        <Dashboard />
-                    </Route>
+                    <PrivateRoute path="/dashboard" component={Dashboard} />
 
-                    <PrivateRoute exact path="/dashboard">
-                        <Dashboard />
+
+                    <PrivateRoute exact path="/">
+                        <Redirect to='/dashboard' />
                     </PrivateRoute>
+
 
 
                 </Switch>
@@ -46,22 +45,16 @@ const App = () => {
 function PrivateRoute({ children, ...rest }) {
     const authUtil = useContext(AuthContext);
 
+    if (!authUtil.isAuth) {
+        return (
+            <Route {...rest}>
+                <Redirect to='/login' />
+            </Route>
+        )
+    }
+
     return (
-        <Route
-            {...rest}
-            render={({ location }) =>
-            authUtil.isAuth ? (
-                    children
-                ) : (
-                    <Redirect
-                        to={{
-                            pathname: "/login",
-                            state: { from: location }
-                        }}
-                    />
-                )
-            }
-        />
+        <Route {...rest} render={()=> children} />
     );
 }
 

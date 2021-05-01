@@ -8,7 +8,8 @@ module.exports = {
   entry: "./src/index.jsx",
   output: { // NEW
     path: path.join(__dirname, 'dist'),
-    filename: "[name].js"
+    publicPath: "/",
+    filename: "dist/bundle.js"
   }, // NEW Ends
   plugins: [htmlPlugin],
   module: {
