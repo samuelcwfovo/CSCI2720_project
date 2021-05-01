@@ -9,7 +9,7 @@
 4. Unzip the locate /src in your custom directory<br>
 5. Use cmd to cd to /*custom directory*/src<br>
 6. Install all node module: **npm install**
-7. Development envirnment: **npm run dev**
+7. Development envirnment: **npm run dev** (all stuff will auto start. and it will auto detect server/client side code change)
 8. Production envirnment: **npm run build**
 9. cd to /server and run the server by: **node index.js** (only when you need to run it on Production envirnment and node server wasn't start)
 10. Pray that the server is successfully setup
