@@ -59,13 +59,13 @@ const Dashboard = () => {
         },
         {
             name: "Hospitals management",
-            adminOnly: false,
+            adminOnly: true,
             link: "hospitals-manage",
             icon: DescriptionOutlined
         },
         {
             name: "Users management",
-            adminOnly: false,
+            adminOnly: true,
             link: "users-manage",
             icon: PeopleAltOutlined
         },
