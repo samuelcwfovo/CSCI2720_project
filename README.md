@@ -19,7 +19,7 @@
 14. Build the html bundle: **npm run build** (need to run this command every time after you update codes in /src I guess)
 15. cd to /server and run the server by: **node index.js**
 16. Pray that the server is successfully setup
-17. Use browser: **http://127.0.0.1:3000/** to check whether it is successful
+17. Use browser: **http://127.0.0.1:2060/** to check whether it is successful
 
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
