@@ -23,7 +23,7 @@ const HospitalsManage = () => {
     return (
         <div>
             <h1>Hospitals Manage</h1>
-			<button type="button" className="btn btn-info" onClick={Refresh}>Refresh Data</button>
+	    <button type="button" className="btn btn-info" onClick={Refresh}>Refresh Data</button>
         </div>
     )
 }
