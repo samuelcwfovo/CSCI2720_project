@@ -178,12 +178,10 @@ router.post('/api/admin/refresh', (req, res) => {
 					newLocation.save(function (err, newLoc){
 						if (err) {console.log(err)}
 						else{
-							console.log('if: ' + newLoc.id)
 							updateWaitTime(newLoc.id, data['waitTime'][key]['topWait'], data['updateTime']);
 						}
 					});
 				}else{
-					console.log('else: ' + hosp.id)
 					updateWaitTime(hosp.id, data['waitTime'][key]['topWait'], data['updateTime']);
 				}
 			});	
