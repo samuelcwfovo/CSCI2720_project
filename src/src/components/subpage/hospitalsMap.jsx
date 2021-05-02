@@ -44,8 +44,8 @@ const HospitalsMap = () => {
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: GoogleMapKey }}
                     defaultCenter={{
-                        lat: 59.95,
-                        lng: 30.33
+                        lat: 22.30,
+                        lng: 114.18
                     }}
                     defaultZoom={11}
                 >
