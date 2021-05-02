@@ -19,14 +19,13 @@
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
 #### Generals
-- [ ] Basic fetches of data from API
 - [ ] Create chart: Waiting time in the past 10 hours
 - [ ] Create chart: Waiting time in this hour of past 7 days
 - [ ] Setup everything on one of our 2720 VM after all codes are completed
 
 #### User Actions
 - [ ] List all places in a table, and allow sorting of the table with one of the listed fields, linking to single places
-- [ ] Show all available places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
+- [ ] Show all ~~available~~ places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
 - [ ] Search for places which contain keywords in one field chosen by the user which will result in a table of place results
 - [ ] A separate view for one single place, containing:<br>
       a. a map showing the place<br>
@@ -37,7 +36,8 @@
 - [x] See the username in the top left/right of screen, and be able to log out **(Done by Samual)**
 
 #### Admin Actions
-- [ ] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app)
+- [x] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app) **(Done by Ray)**
+
 - [ ] CRUD place data in the local database
 - [ ] CRUD user data (username and password only) in the local database
 - [ ] Log out as admin
@@ -46,11 +46,3 @@
 - [x] Log in as user with username and password **(Done by Samual)**
 - [ ] Log in as admin using username and password both as admin (Shall be implemented to the db in 2720 VM after all codes are completed
 )
-
-## Logs
-
-Samuel: Initial upload.<br><br>
-Samuel: Completed Login and Sign Up pages.<br><br>
-Samuel: Initialized Main page.<br><br>
-Ray: Created README.md.<br><br>
-Anson: Uploaded module: retrive-hospital-data.js

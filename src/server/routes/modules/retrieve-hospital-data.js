@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-// Return a promise containing all hospital waittime infoformation in json
+// Return a promise containing all hospital waittime information in json
 /* Json Schema:
     waitTime:
         { type: Array,
