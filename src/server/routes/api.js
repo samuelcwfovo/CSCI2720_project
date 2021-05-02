@@ -56,6 +56,27 @@ var WaitingTimeSchema = Schema({
 });
 var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
 
+function updateWaitTime(id, Wtime, Utime){
+	WaitingTimeModel.updateOne({
+		location: id 
+	}, {
+		$set:{
+		location: id,
+		waitingTime: Wtime,
+		updateTime: Utime
+		}
+	}, {
+		upsert: true
+	}, function(err) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log("updated succeeded");
+		}
+	});
+}
+
 
 router.post('/api/auth/token', (req, res) => {
     if (!req.cookies.token) { return res.status(400).json({ code: 1, description: "token not found" }) }
@@ -143,7 +164,29 @@ router.post('/api/admin/refresh', (req, res) => {
   if (decoded.admin){
 	const dataP = retrieveHospitalData.getHospData()
 	dataP.then(data => {
-
+		Object.keys(data['waitTime']).forEach(function(key) {
+			var id;
+				
+			LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
+				if (err) {console.log(err)}
+				else if (!hosp){
+					var newLocation = new LocationModel({
+						name: data['waitTime'][key]['hospName'],
+						latitude: 0,
+						longitude: 0,
+					});
+					newLocation.save(function (err, newLoc){
+						if (err) {console.log(err)}
+						else{
+							console.log('if: ' + newLoc.id)
+							updateWaitTime(newLoc.id, data['waitTime'][key]['topWait'], data['updateTime']);
+						}
+					});
+				}else{
+					console.log('else: ' + hosp.id)
+					updateWaitTime(hosp.id, data['waitTime'][key]['topWait'], data['updateTime']);
+				}
+			});	
 		})
 		return res.status(201).json({ code: 0, description: "refreshed successfully"})
     }).catch(error => console.log('caught', error))
