@@ -146,6 +146,7 @@ router.post('/api/admin/refresh', (req, res) => {
 		Object.keys(data['waitTime']).forEach(function(key) {
 			LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
 				if (err) {console.log(err)}
+				var id;
 				if (!hosp){
 					console.log(data['waitTime'][key]['hospName'])
 					var newLocation = new LocationModel({
@@ -153,10 +154,31 @@ router.post('/api/admin/refresh', (req, res) => {
 						latitude: 0,
 						longitude: 0,
 					});
-					newLocation.save(function (err){if (err) {}})
+					newLocation.save(function (err, newLoc){
+						if (err) {console.log(err)}
+						id = newLoc._id;
+					});
+				} else{
+					id = hosp._id;
 				}
+				
+				WaitingTimeModel.updateOne({
+						location: id 
+					}, {
+						$set:{
+							location: id,
+							waitingTime: data['waitTime'][key]['topWait'],
+							updateTime: data['updateTime']
+						}
+					}, {
+						upsert: true
+					}, function(err, data) {
+					  if (err) {
+						  console.log(err);
+					  }
+					}
+				);
 			});
-			
 		})
 		return res.status(201).json({ code: 0, description: "refreshed successfully"})
     }).catch(error => console.log('caught', error))
