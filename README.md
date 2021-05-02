@@ -37,7 +37,8 @@
 - [x] See the username in the top left/right of screen, and be able to log out **(Done by Samual)**
 
 #### Admin Actions
-- [ ] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app)
+- [x] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app) **(Done by Ray)**
+
 - [ ] CRUD place data in the local database
 - [ ] CRUD user data (username and password only) in the local database
 - [ ] Log out as admin
