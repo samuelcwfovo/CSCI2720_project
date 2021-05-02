@@ -10,6 +10,7 @@ const HospitalsMap = () => {
     return (
         <div>
             <h1>Scroll</h1>
+			<h1>Testing...</h1>
             <h1>Scroll</h1>
             <h1>Scroll</h1>
             <h1>Scroll</h1>
