@@ -1,7 +1,10 @@
 import React, { useState, useLayoutEffect, useContext } from 'react';
 import '../assets/css/dashboard.css';
 
-import { LocalHospitalOutlined, FavoriteTwoTone, DescriptionOutlined, ScheduleOutlined, PeopleAltOutlined, Menu, AccountCircle } from '@material-ui/icons';
+import {
+    LocalHospitalOutlined, FavoriteTwoTone, DescriptionOutlined, ScheduleOutlined,
+    PeopleAltOutlined, Menu, AccountCircle, Fullscreen, FullscreenExit
+} from '@material-ui/icons';
 
 import { Link, Route, Switch, Redirect, useRouteMatch, useHistory } from 'react-router-dom';
 
@@ -19,6 +22,7 @@ import UserManage from './subpage/userManage.jsx';
 const Dashboard = () => {
 
     const [selected, setSelect] = useState(0);
+    const [fullScreen, setFullScreen] = useState(false);
 
     const authUtil = useContext(AuthContext);
 
@@ -39,8 +43,7 @@ const Dashboard = () => {
     const Logout = () => {
         authUtil.setAuth(false);
         document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-
-        console.log(document.cookie);
+        sessionStorage.clear();
 
         history.push("/");
     }
@@ -88,6 +91,17 @@ const Dashboard = () => {
         document.querySelector("#sidenav-close").click();
     }
 
+    const fullScreenClick = () => {
+        if (!fullScreen) {
+            setFullScreen(true);
+            document.documentElement.requestFullscreen();
+        } else {
+            setFullScreen(false);
+            document.exitFullscreen();
+        }
+    }
+
+
 
     return (
         <div className="dashboard-wrapper">
@@ -95,8 +109,8 @@ const Dashboard = () => {
             <aside id="sidenav-open">
                 <div className="nav-wrapper">
                     <div className="app-logo">
-                        <ScheduleOutlined />
-                        <span>AE WAITING TIME</span>
+                        {/* <ScheduleOutlined /> */}
+                        <span className="fw-bold fs-4">AE TIME</span>
 
                     </div>
                     <div className="nav-list">
@@ -116,36 +130,55 @@ const Dashboard = () => {
                             })
                         }
                     </div>
+
+                    <div className="d-flex align-items-center flex-row justify-content-around m-4">
+                        <button type="button" className="btn btn-outline-info" onClick={() => Logout()}>LOGOUT</button>
+                        <div id="full-screen" className="d-none" onClick={() => fullScreenClick()}>
+                            {fullScreen ? <FullscreenExit /> : <Fullscreen />}
+                        </div>
+
+                    </div>
                 </div>
                 <a href="#" id="sidenav-close" title="Close Menu" aria-label="Close Menu"></a>
             </aside>
             <main className="dashboard-main">
-                <header className="d-flex align-items-center justify-content-between sticky-top p-3 header">
+                <header className="sticky-top p-2 header">
                     <div className="d-flex align-items-center justify-content-between">
-                        <a href="#sidenav-open" id="open-menu" className="d-none mx-3" title="Open Menu" aria-label="Open Menu">
-                            <Menu />
-                        </a>
-                        <div className="fw-bold mx-2 fs-3">Dashboard</div>
+                        <div className="d-flex align-items-center">
+                            <a href="#sidenav-open" id="open-menu" className="d-none mr-2" title="Open Menu" aria-label="Open Menu">
+                                <Menu />
+                            </a>
+                            <div className="fw-bold mx-2 fs-3">Dashboard</div>
+                        </div>
+                        <div className="d-flex align-items-center">
+                            <span className="fs-5">{userName}</span>
+                            <AccountCircle className="mx-2 fs-2" />
+                        </div>
                     </div>
 
-                    <div className="user-info d-flex flex-row align-items-center fs-5">
+                    {/* <div className="user-info d-flex flex-row align-items-center fs-5">
                         <span >{userName}</span>
                         <AccountCircle className="mx-3 fs-3" />
                         <button type="button" className="btn btn-outline-info" onClick={() => Logout()}>LOGOUT</button>
-                    </div>
+                    </div> */}
+                    {/* <div id="full-screen" className="d-none" onClick={() => fullScreenClick()}>
+                            {fullScreen ? <FullscreenExit /> : <Fullscreen />}
+                        </div> */}
+
                 </header>
 
-                <Switch>
-                    <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
-                    <Route path={"/dashboard/favourite"} component={FavouritePlace} />
-                    <Route path={"/dashboard/hospitals-manage"} component={HospitalsManage} />
-                    <Route path={"/dashboard/users-manage"} component={UserManage} />
-                    <Route exact path="/dashboard">
-                        <Redirect to='/dashboard/hospitals' />
-                    </Route>
+                <div className="container-fluid">
+                    <Switch>
+                        <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
+                        <Route path={"/dashboard/favourite"} component={FavouritePlace} />
+                        <Route path={"/dashboard/hospitals-manage"} component={HospitalsManage} />
+                        <Route path={"/dashboard/users-manage"} component={UserManage} />
+                        <Route exact path="/dashboard">
+                            <Redirect to='/dashboard/hospitals' />
+                        </Route>
 
-                </Switch>
-
+                    </Switch>
+                </div>
             </main>
 
 

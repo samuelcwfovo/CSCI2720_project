@@ -43,13 +43,22 @@ var UserModel = mongoose.model('User', UserSchema);
 router.post('/api/auth/token', (req, res) => {
     if (!req.cookies.token) { return res.status(400).json({ code: 1, description: "token not found" }) }
 
-    const decoded = jwt.verify(req.cookies.token, accessTokenSecret)
+    jwt.verify(req.cookies.token, accessTokenSecret, function (err, decoded) {
+        if (err) return res.status(400).json({ code: 1, error: err, description: "token can not decode/ verify." });
 
-    if (decoded.userId && decoded.userName) {
-        return res.status(200).json({ code: 2, userInfo: decoded, description: "auth success." });
-    }
+        if (decoded.userId && decoded.userName) {
 
-    return res.status(400).json({ code: 1, description: "token can not decode." })
+            //check is account valid. otherwise auth will pass if account delete in db.
+            UserModel.findOne({ 'userName': decoded.userName })
+                .exec(function (err, user) {
+                    if (err) return res.status(500).json({ code: 0, error: err, description: "db find user error." });
+                    if (!user) return res.status(401).json({ code: 1, description: "username not found." });
+
+                    return res.status(200).json({ code: 2, userInfo: decoded, description: "auth success." });
+                })
+        }
+
+    });
 })
 
 
@@ -70,10 +79,10 @@ router.post('/api/auth/login', (req, res) => {
                         admin: user.admin
                     }
 
-                    const token = jwt.sign(payload, accessTokenSecret)
+                    const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
 
 
-                    res.cookie('token', token, { maxAge: 900000 });
+                    res.cookie('token', token, { maxAge: 90000000 });
                     return res.status(200).json({ code: 2, userInfo: payload, description: "auth success." });
 
                 } else {
@@ -97,7 +106,7 @@ router.post('/api/auth/signup', (req, res) => {
             let newUser = new UserModel({
                 userName: req.body.userName,
                 hashedPassword: hashpw,
-                admin: true,
+                admin: false,
             })
 
             newUser.save(function (err, savedUser) {
@@ -109,9 +118,9 @@ router.post('/api/auth/signup', (req, res) => {
                     admin: savedUser.admin
                 }
 
-                const token = jwt.sign(payload, accessTokenSecret)
+                const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
 
-                res.cookie('token', token, { maxAge: 900000 });
+                res.cookie('token', token, { maxAge: 90000000 });
                 return res.status(201).json({ code: 2, userInfo: payload, description: "created" })
             })
         })

@@ -9,8 +9,37 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 const HospitalsMap = () => {
     return (
         <div>
-            <h1>Hospitals</h1>
-            <div style={{ height: '100vh', width: '100%' }}>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+            <h1>Scroll</h1>
+
+            <div style={{ height: '50vh', width: '100%' }}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: GoogleMapKey }}
                     defaultCenter={{

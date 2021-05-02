@@ -110,7 +110,7 @@ const LoginForm = () => {
 
     return (
         <div id="container" className="p-4 text-center">
-            <h6 className="mb-0 py-3">
+            <h6 className="mb-0 py-3 user-select-none">
                 <span>Log In</span>
                 <span>Sign Up</span>
             </h6>
@@ -131,7 +131,7 @@ const LoginForm = () => {
                         login ? "front" : "front front-rotate"
                     }>
                         <div className="section text-center mt-5 effect-3d">
-                            <h4 className="mb-4 ">LOG IN</h4>
+                            <h4 className="mb-4">LOG IN</h4>
                         </div>
                         <form id="login-form">
                             <div className="input-group py-3 mx-3 width-auto effect-3d">
@@ -152,7 +152,7 @@ const LoginForm = () => {
                         login ? "back" : "back back-rotate"
                     }>
                         <div className="section text-center mt-5 effect-3d">
-                            <h4 className="mb-1 ">SIGN UP</h4>
+                            <h4 className="mb-1">SIGN UP</h4>
                         </div>
 
                         <form id="signup-form">
@@ -219,7 +219,7 @@ const Login = () => {
                     sessionStorage.setItem('admin', res.userInfo.admin);
                     authUtil.setAuth(true)
                     history.push("/");
-                    console.log('backgorund login')
+                    console.log('backgorund login ' + res.userInfo.admin)
                 }
             })
     }
