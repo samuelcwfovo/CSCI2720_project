@@ -19,7 +19,6 @@
 ## Tasks
 **Ray: "Feel free to add missing tasks if there is one!"**<br><br>
 #### Generals
-- [ ] Basic fetches of data from API
 - [ ] Create chart: Waiting time in the past 10 hours
 - [ ] Create chart: Waiting time in this hour of past 7 days
 - [ ] Setup everything on one of our 2720 VM after all codes are completed
