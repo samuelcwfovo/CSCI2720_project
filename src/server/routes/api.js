@@ -143,51 +143,7 @@ router.post('/api/admin/refresh', (req, res) => {
   if (decoded.admin){
 	const dataP = retrieveHospitalData.getHospData()
 	dataP.then(data => {
-		Object.keys(data['waitTime']).forEach(async function(key) {
-			var id;
-			var wait = () => WaitingTimeModel.updateOne({
-						location: id 
-					}, {
-						$set:{
-							location: id,
-							waitingTime: data['waitTime'][key]['topWait'],
-							updateTime: data['updateTime']
-						}
-					}, {
-						upsert: true
-					}, function(err, data) {
-					  if (err) {
-						  console.log(err);
-					  }
-					  else {
-						  console.log("updated succeeded");
-					  }
-					}
-				);
-				
-			await LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
-				if (err) {console.log(err)}
-				else if (hosp){
-					id = hosp._id;
-					wait();
-				}
-			});
-			
-			if (!id){
-				var newLocation = new LocationModel({
-						name: data['waitTime'][key]['hospName'],
-						latitude: 0,
-						longitude: 0,
-				});
-				newLocation.save(function (err, newLoc){
-					if (err) {console.log(err)}
-					else{
-						id = newLoc.id;
-						wait();
-					}
-				});
-			}
-				
+
 		})
 		return res.status(201).json({ code: 0, description: "refreshed successfully"})
     }).catch(error => console.log('caught', error))
