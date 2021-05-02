@@ -49,7 +49,12 @@ var LocationSchema = Schema({
 LocationSchema.plugin(AutoIncrement, { inc_field: 'locId' });
 var LocationModel = mongoose.model('Location', LocationSchema);
 
-
+var WaitingTimeSchema = Schema({
+    location: { type: Schema.Types.ObjectId, ref: 'Location', unique: true, required: true },
+	waitingTime: { type: String },
+	updateTime: { type: String },
+});
+var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
 
 
 router.post('/api/auth/token', (req, res) => {
@@ -130,6 +135,34 @@ router.post('/api/auth/signup', (req, res) => {
     });
 });
 
+router.post('/api/admin/refresh', (req, res) => {
+  if (!req.cookies.token) {return res.status(400).json({ code: 1, description: "token not found"})}
+  
+  const decoded = jwt.verify(req.cookies.token, accessTokenSecret)
 
+  if (decoded.admin){
+	const dataP = retrieveHospitalData.getHospData()
+	dataP.then(data => {
+		Object.keys(data['waitTime']).forEach(function(key) {
+			LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
+				if (err) {console.log(err)}
+				if (!hosp){
+					console.log(data['waitTime'][key]['hospName'])
+					var newLocation = new LocationModel({
+						name: data['waitTime'][key]['hospName'],
+						latitude: 0,
+						longitude: 0,
+					});
+					newLocation.save(function (err){if (err) {}})
+				}
+			});
+			
+		})
+		return res.status(201).json({ code: 0, description: "refreshed successfully"})
+    }).catch(error => console.log('caught', error))
+  }else{
+	  return res.status(400).json({ code: 1, description: "invalid admin identity"})
+  }
+});
 
 module.exports = router;
