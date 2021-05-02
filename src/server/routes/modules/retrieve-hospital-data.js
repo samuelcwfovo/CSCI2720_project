@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const API_KEY = 'AIzaSyBNcklVz6OSbXWIS2S0pafMYKr5onunoOs'
+
 // Return a promise containing all hospital waittime information in json
 /* Json Schema:
     waitTime:
@@ -31,4 +33,17 @@ function findHospDataByName(hospName) {
         })
 }
 
-module.exports = { getHospData, findHospDataByName };
+// Return a promise containing target hospital coordinates in json
+/* Json Schema:
+    lat: Number,
+    lng: Number
+*/
+function getHospCoordinate(hospName) {
+    hospName = hospName.replace(' ', '+');
+    let URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${hospName}&key=${API_KEY}`
+    return fetch(URL)
+            .then(res => res.json())
+            .then(res => res.results[0].geometry.location);
+}
+
+module.exports = { getHospData, findHospDataByName, getHospCoordinate };
