@@ -62,25 +62,17 @@ var CommentSchema = Schema({
 });
 var CommentModel = mongoose.model('Comment', CommentSchema);
 
-function updateWaitTime(id, Wtime, Utime) {
-    WaitingTimeModel.updateOne({
-        location: id
-    }, {
+
+function updateWaitTime(locId, Wtime, Utime) {
+    WaitingTimeModel.updateOne({ 'locationId': locId, 'date': Utime }, {
         $set: {
-            location: id,
+            locationId: locId,
             waitingTime: Wtime,
-            updateTime: Utime
-        }
-    }, {
-        upsert: true
-    }, function (err) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log("updated succeeded");
-        }
-    });
+            date: Utime,
+        },
+    }, { upsert: true }, function (err) {
+        if (err) { console.log(err) };
+    })
 }
 
 
@@ -224,42 +216,11 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
                 if (err) { console.log(err) };
             })
 
-            WaitingTimeModel.updateOne({ 'locationId': newLocation.locId, 'date': updateTime }, {
-                $set: {
-                    locationId: newLocation.locId,
-                    waitingTime: time,
-                    date: updateTime,
-                },
-            }, { upsert: true }, function (err) {
-                if (err) { console.log(err) };
-            })
+            updateWaitTime(newLocation.locId, time, updateTime);
+
         });
 
         return res.status(201).json({ code: 2, description: "refresh successfully." })
-
-        // Object.keys(data['waitTime']).forEach(function (key) {
-        //     var id;
-
-        //     LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
-        //         if (err) { console.log(err) }
-        //         else if (!hosp) {
-        //             var newLocation = new LocationModel({
-        //                 name: data['waitTime'][key]['hospName'],
-        //                 latitude: 0,
-        //                 longitude: 0,
-        //             });
-        //             newLocation.save(function (err, newLoc) {
-        //                 if (err) { console.log(err) }
-        //                 else {
-        //                     updateWaitTime(newLoc.id, data['waitTime'][key]['topWait'], data['updateTime']);
-        //                 }
-        //             });
-        //         } else {
-        //             updateWaitTime(hosp.id, data['waitTime'][key]['topWait'], data['updateTime']);
-        //         }
-        //     });
-        // })
-        // return res.status(201).json({ code: 0, description: "refreshed successfully" })
     }).catch(error => console.log('caught', error))
 });
 
