@@ -63,6 +63,13 @@ const Dashboard = () => {
             icon: FavoriteTwoTone
         },
         {
+            name: "Historical data",
+            adminOnly: false,
+            link: 'favourite',
+            icon: DescriptionOutlined
+
+        },
+        {
             name: "Hospitals management",
             adminOnly: true,
             link: "hospitals-manage",

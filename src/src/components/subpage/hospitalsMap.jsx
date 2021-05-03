@@ -9,7 +9,12 @@ import { LocalHospitalTwoTone } from '@material-ui/icons';
 
 const Mark = () => {
     return (
-        <div><LocalHospitalTwoTone className="fs-1 text-danger " /></div>
+        <div style={{
+            position: 'absolute',
+            transform: 'translate(-50%, -50%)'
+        }}>
+            <LocalHospitalTwoTone className="fs-1 text-danger" />
+        </div>
     )
 }
 
@@ -78,7 +83,7 @@ const HospitalsMap = () => {
                         lat: 22.31930137022674,
                         lng: 114.16997366890004
                     }}
-                    defaultZoom={11}
+                    defaultZoom={10}
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, locations)}
                 >
