@@ -47,14 +47,15 @@ var LocationModel = mongoose.model('Location', LocationSchema);
 
 
 var WaitingTimeSchema = Schema({
-    location: { type: Number, unique: true, required: true },
+    locationId: { type: Number, required: true },
     waitingTime: { type: String },
-    updateTime: { type: String },
+    date: { type: Date },
 });
 var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
 
+
 var CommentSchema = Schema({
-    locationName: { type: String, required: true },
+    locationId: { type: Number, required: true },
     author: { type: String },
     comment: { type: String },
     creationDate: { type: Date }
