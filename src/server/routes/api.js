@@ -53,26 +53,33 @@ var WaitingTimeSchema = Schema({
 });
 var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
 
+var CommentSchema = Schema({
+    locationName: { type: String, required: true },
+    author: { type: String },
+    comment: { type: String },
+    creationDate: { type: Date }
+});
+var CommentModel = mongoose.model('Comment', CommentSchema);
 
-function updateWaitTime(id, Wtime, Utime) {
-    WaitingTimeModel.updateOne({
-        location: id
-    }, {
-        $set: {
-            location: id,
-            waitingTime: Wtime,
-            updateTime: Utime
-        }
-    }, {
-        upsert: true
-    }, function (err) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            console.log("updated succeeded");
-        }
-    });
+function updateWaitTime(id, Wtime, Utime){
+	WaitingTimeModel.updateOne({
+		location: id 
+	}, {
+		$set:{
+		location: id,
+		waitingTime: Wtime,
+		updateTime: Utime
+		}
+	}, {
+		upsert: true
+	}, function(err) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			console.log("updated succeeded");
+		}
+	});
 }
 
 
