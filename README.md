@@ -40,7 +40,7 @@
 
 - [ ] CRUD place data in the local database
 - [ ] CRUD user data (username and password only) in the local database
-- [ ] Log out as admin
+- [x] Log out as admin
 
 #### Non-user actions:
 - [x] Log in as user with username and password **(Done by Samual)**
