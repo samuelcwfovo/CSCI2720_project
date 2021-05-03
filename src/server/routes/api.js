@@ -12,7 +12,7 @@ const saltRounds = 10;
 const accessTokenSecret = process.env.TOKENSECRET;
 
 const retrieveHospitalData = require('./modules/retrieve-hospital-data');
-
+const { convertDateMongoose } = require('./modules/date-parser');
 router.use(bodyParser.json());
 router.use(cookieParser());
 
@@ -62,25 +62,25 @@ var CommentSchema = Schema({
 });
 var CommentModel = mongoose.model('Comment', CommentSchema);
 
-function updateWaitTime(id, Wtime, Utime){
-	WaitingTimeModel.updateOne({
-		location: id 
-	}, {
-		$set:{
-		location: id,
-		waitingTime: Wtime,
-		updateTime: Utime
-		}
-	}, {
-		upsert: true
-	}, function(err) {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			console.log("updated succeeded");
-		}
-	});
+function updateWaitTime(id, Wtime, Utime) {
+    WaitingTimeModel.updateOne({
+        location: id
+    }, {
+        $set: {
+            location: id,
+            waitingTime: Wtime,
+            updateTime: Utime
+        }
+    }, {
+        upsert: true
+    }, function (err) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log("updated succeeded");
+        }
+    });
 }
 
 
@@ -206,6 +206,8 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
     const dataP = retrieveHospitalData.getHospData();
 
     dataP.then(data => {
+        let updateTime = new Date(convertDateMongoose(data['updateTime']));
+
         data['waitTime'].forEach((element, index) => {
             let hospName = element['hospName'];
             let time = element['topWait'];
@@ -219,6 +221,16 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
             }
 
             LocationModel.updateOne({ 'locId': newLocation.locId }, { $set: newLocation }, { upsert: true }, function (err, loc) {
+                if (err) { console.log(err) };
+            })
+
+            WaitingTimeModel.updateOne({ 'locationId': newLocation.locId, 'date': updateTime }, {
+                $set: {
+                    locationId: newLocation.locId,
+                    waitingTime: time,
+                    date: updateTime,
+                },
+            }, { upsert: true }, function (err) {
                 if (err) { console.log(err) };
             })
         });

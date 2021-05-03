@@ -9,7 +9,7 @@ import { LocalHospitalTwoTone } from '@material-ui/icons';
 
 const Mark = () => {
     return (
-        <div><LocalHospitalTwoTone className="fs-1  text-danger " /></div>
+        <div><LocalHospitalTwoTone className="fs-1 text-danger " /></div>
     )
 }
 
@@ -60,6 +60,7 @@ const HospitalsMap = () => {
             .then(data => data.json())
             .then(res => {
                 if (res.code === 2) {
+                    console.log(res.hospitals)
                     setLocations(res.hospitals)
                 } else {
                     console.log("fetch hospital data fail", res)
@@ -68,9 +69,8 @@ const HospitalsMap = () => {
 
     }
 
-
-    return (
-        <div>
+    const content = () => {
+        return (
             <div style={{ height: '50vh', width: '100%' }}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: GoogleMapKey }}
@@ -82,17 +82,26 @@ const HospitalsMap = () => {
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, locations)}
                 >
-                    {locations.forEach((element, index) => {
-                        <Mark
-                            key={index}
-                            lat={element.latitude}
-                            lng={element.longitude}
-                        />
+                    {locations.map((element, index) => {
+                        console.log(element)
+                        return (
+                            <Mark
+                                key={index}
+                                lat={element.latitude}
+                                lng={element.longitude}
+                            />
+                        )
                     })}
+
                 </GoogleMapReact>
-
-
             </div>
+        )
+    }
+
+
+    return (
+        <div>
+            {locations.length > 0 ? content() : null}
         </div >
     )
 }
