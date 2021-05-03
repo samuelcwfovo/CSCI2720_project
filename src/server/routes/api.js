@@ -224,4 +224,20 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
     }).catch(error => console.log('caught', error))
 });
 
+router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
+    const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "get users permission denied." });
+
+	    UserModel.find({},
+			{
+				userId: 1,
+				userName: 1
+			}
+		).exec(function (err, users) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "find users error" });
+
+			return res.status(200).json({ code : 2, description : "find users succeeded", users });
+        })
+});
+
 module.exports = router;
