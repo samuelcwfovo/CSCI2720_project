@@ -9,6 +9,7 @@ function timeConvert(time) {
     let min = time.slice(sepPos+1);
 
     if (m == 'pm') {hr += 12;}
+    else if (hr == 12 && m == 'am') {hr = '00';}
     else if (hr < 10) {hr = '0' + String(hr);}
     if (min.length == 1) {min = '0' + min;}
     return `${hr}:${min}:00`;
