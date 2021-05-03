@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const jwt = require('jsonwebtoken');
@@ -31,58 +31,58 @@ var UserSchema = Schema({
     userName: { type: String, unique: true, required: true },
     hashedPassword: { type: String, required: true },
     admin: { type: Boolean },
-    favouritePlace: [{ type: Schema.Types.ObjectId, ref: 'Location' }],
+    favouritePlace: [{ type: Number }],
 });
 UserSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 var UserModel = mongoose.model('User', UserSchema);
 
+
 var LocationSchema = Schema({
+    locId: { type: Number, required: true, unique: true },
     name: { type: String, unique: true, required: true },
     latitude: { type: Number, required: true },
-	longitude: { type: Number, required: true },
-    comments: { 
-	  author: { type: String },
-	  comment: { type: String },
-	  creationDate: { type: Date }
-	}
+    longitude: { type: Number, required: true },
 });
-LocationSchema.plugin(AutoIncrement, { inc_field: 'locId' });
 var LocationModel = mongoose.model('Location', LocationSchema);
 
+
 var WaitingTimeSchema = Schema({
-    location: { type: Schema.Types.ObjectId, ref: 'Location', unique: true, required: true },
-	waitingTime: { type: String },
-	updateTime: { type: String },
+    location: { type: Number, unique: true, required: true },
+    waitingTime: { type: String },
+    updateTime: { type: String },
 });
 var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
 
-function updateWaitTime(id, Wtime, Utime){
-	WaitingTimeModel.updateOne({
-		location: id 
-	}, {
-		$set:{
-		location: id,
-		waitingTime: Wtime,
-		updateTime: Utime
-		}
-	}, {
-		upsert: true
-	}, function(err) {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			console.log("updated succeeded");
-		}
-	});
+
+function updateWaitTime(id, Wtime, Utime) {
+    WaitingTimeModel.updateOne({
+        location: id
+    }, {
+        $set: {
+            location: id,
+            waitingTime: Wtime,
+            updateTime: Utime
+        }
+    }, {
+        upsert: true
+    }, function (err) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log("updated succeeded");
+        }
+    });
 }
 
 
-router.post('/api/auth/token', (req, res) => {
-    if (!req.cookies.token) { return res.status(400).json({ code: 1, description: "token not found" }) }
+const authenticateJWT = (req, res, next) => {
+    const token = req.cookies.token;
 
-    jwt.verify(req.cookies.token, accessTokenSecret, function (err, decoded) {
-        if (err) return res.status(400).json({ code: 1, error: err, description: "token can not decode/ verify." });
+    if (!token) { return res.status(401).json({ code: 1, description: "token not found" }) }
+
+    jwt.verify(token, accessTokenSecret, function (err, decoded) {
+        if (err) return res.status(401).json({ code: 1, error: err, description: "token can not decode/ verify." });
 
         if (decoded.userId && decoded.userName) {
 
@@ -92,11 +92,24 @@ router.post('/api/auth/token', (req, res) => {
                     if (err) return res.status(500).json({ code: 0, error: err, description: "db find user error." });
                     if (!user) return res.status(401).json({ code: 1, description: "username not found." });
 
-                    return res.status(200).json({ code: 2, userInfo: decoded, description: "auth success." });
+                    const token = jwt.sign({ userId: decoded.userId, userName: decoded.userName, admin: decoded.admin }, accessTokenSecret, { expiresIn: '1h' })
+
+
+                    res.cookie('token', token, { maxAge: 900000 });
+
+                    req.decoded = decoded
+                    next()
                 })
         }
 
     });
+};
+
+router.post('/api/auth/token', authenticateJWT, (req, res) => {
+
+    const decoded = req.decoded;
+    return res.status(200).json({ code: 2, userInfo: decoded, description: "auth success." });
+
 })
 
 
@@ -120,7 +133,7 @@ router.post('/api/auth/login', (req, res) => {
                     const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
 
 
-                    res.cookie('token', token, { maxAge: 90000000 });
+                    res.cookie('token', token, { maxAge: 900000 });
                     return res.status(200).json({ code: 2, userInfo: payload, description: "auth success." });
 
                 } else {
@@ -158,48 +171,76 @@ router.post('/api/auth/signup', (req, res) => {
 
                 const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
 
-                res.cookie('token', token, { maxAge: 90000000 });
-                return res.status(201).json({ code: 2, userInfo: payload, description: "created" })
+                res.cookie('token', token, { maxAge: 900000 });
+                return res.status(201).json({ code: 2, userInfo: payload, description: "created." })
             })
         })
     });
 });
 
-router.post('/api/admin/refresh', (req, res) => {
-  if (!req.cookies.token) {return res.status(400).json({ code: 1, description: "token not found"})}
-  
-  const decoded = jwt.verify(req.cookies.token, accessTokenSecret)
 
-  if (decoded.admin){
-	const dataP = retrieveHospitalData.getHospData()
-	dataP.then(data => {
-		Object.keys(data['waitTime']).forEach(function(key) {
-			var id;
-				
-			LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
-				if (err) {console.log(err)}
-				else if (!hosp){
-					var newLocation = new LocationModel({
-						name: data['waitTime'][key]['hospName'],
-						latitude: 0,
-						longitude: 0,
-					});
-					newLocation.save(function (err, newLoc){
-						if (err) {console.log(err)}
-						else{
-							updateWaitTime(newLoc.id, data['waitTime'][key]['topWait'], data['updateTime']);
-						}
-					});
-				}else{
-					updateWaitTime(hosp.id, data['waitTime'][key]['topWait'], data['updateTime']);
-				}
-			});	
-		})
-		return res.status(201).json({ code: 0, description: "refreshed successfully"})
+router.get('/api/hospital', authenticateJWT, (req, res) => {
+    LocationModel.find()
+        .select()
+        .exec(function (err, locations) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "find locations error" });
+
+            return res.status(200).json({ code: 2, hospitals: locations, description: "get hospital data successfully." })
+        })
+})
+
+
+router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
+    const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
+
+
+    const dataP = retrieveHospitalData.getHospData();
+
+    dataP.then(data => {
+        data['waitTime'].forEach((element, index) => {
+            let hospName = element['hospName'];
+            let time = element['topWait'];
+            let locations = retrieveHospitalData.findHospLocation(hospName);
+
+            let newLocation = {
+                locId: index,
+                name: hospName,
+                latitude: locations.latitude,
+                longitude: locations.longitude,
+            }
+
+            LocationModel.updateOne({ 'locId': newLocation.locId }, { $set: newLocation }, { upsert: true }, function (err, loc) {
+                if (err) { console.log(err) };
+            })
+        });
+
+        return res.status(201).json({ code: 2, description: "refresh successfully." })
+
+        // Object.keys(data['waitTime']).forEach(function (key) {
+        //     var id;
+
+        //     LocationModel.findOne({ 'name': data['waitTime'][key]['hospName'] }, function (err, hosp) {
+        //         if (err) { console.log(err) }
+        //         else if (!hosp) {
+        //             var newLocation = new LocationModel({
+        //                 name: data['waitTime'][key]['hospName'],
+        //                 latitude: 0,
+        //                 longitude: 0,
+        //             });
+        //             newLocation.save(function (err, newLoc) {
+        //                 if (err) { console.log(err) }
+        //                 else {
+        //                     updateWaitTime(newLoc.id, data['waitTime'][key]['topWait'], data['updateTime']);
+        //                 }
+        //             });
+        //         } else {
+        //             updateWaitTime(hosp.id, data['waitTime'][key]['topWait'], data['updateTime']);
+        //         }
+        //     });
+        // })
+        // return res.status(201).json({ code: 0, description: "refreshed successfully" })
     }).catch(error => console.log('caught', error))
-  }else{
-	  return res.status(400).json({ code: 1, description: "invalid admin identity"})
-  }
 });
 
 module.exports = router;

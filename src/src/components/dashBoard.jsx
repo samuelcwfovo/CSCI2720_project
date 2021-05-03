@@ -131,7 +131,7 @@ const Dashboard = () => {
                         }
                     </div>
 
-                    <div className="d-flex align-items-center flex-row justify-content-around m-4">
+                    <div className="d-flex align-items-center flex-row justify-content-around p-4" style={{borderTop:"2px solid rgba(133, 133, 133, 0.1)"}}>
                         <button type="button" className="btn btn-outline-info" onClick={() => Logout()}>LOGOUT</button>
                         <div id="full-screen" className="d-none" onClick={() => fullScreenClick()}>
                             {fullScreen ? <FullscreenExit /> : <Fullscreen />}
