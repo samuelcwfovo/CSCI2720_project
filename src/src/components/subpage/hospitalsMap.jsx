@@ -43,7 +43,7 @@ const apiIsLoaded = (map, maps, locations) => {
 
 const HospitalsMap = () => {
 
-    const [locations, setLocations] = useState({});
+    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
         getLocationData();
