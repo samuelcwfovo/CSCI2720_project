@@ -40,11 +40,6 @@ var LocationSchema = Schema({
     name: { type: String, unique: true, required: true },
     latitude: { type: Number, required: true },
 	longitude: { type: Number, required: true },
-    comments: { 
-	  author: { type: String },
-	  comment: { type: String },
-	  creationDate: { type: Date }
-	}
 });
 LocationSchema.plugin(AutoIncrement, { inc_field: 'locId' });
 var LocationModel = mongoose.model('Location', LocationSchema);
@@ -55,6 +50,14 @@ var WaitingTimeSchema = Schema({
 	updateTime: { type: String },
 });
 var WaitingTimeModel = mongoose.model('WaitingTime', WaitingTimeSchema);
+
+var CommentSchema = Schema({
+    locationName: { type: String, required: true },
+    author: { type: String },
+    comment: { type: String },
+    creationDate: { type: Date }
+});
+var CommentModel = mongoose.model('Comment', CommentSchema);
 
 function updateWaitTime(id, Wtime, Utime){
 	WaitingTimeModel.updateOne({
