@@ -8,7 +8,7 @@ function timeConvert(time) {
     let hr = Number(time.slice(0, sepPos));
     let min = time.slice(sepPos+1);
 
-    if (m == 'pm') {hr += 12;}
+    if (m == 'pm' && hr > 12) {hr += 12;}
     else if (hr == 12 && m == 'am') {hr = '00';}
     else if (hr < 10) {hr = '0' + String(hr);}
     if (min.length == 1) {min = '0' + min;}
@@ -31,7 +31,7 @@ function convertDateMongoose(dateStr) {
     if (m.length == 1) {m = '0' + m;}
     if (d.length == 1) {d = '0' + d;}
 
-    return `${y}-${m}-${d}${timeConvert(time)}`;
+    return `${y}-${m}-${d}T${timeConvert(time)}`;
 }
 
 module.exports = {timeConvert, convertDateMongoose};
