@@ -179,14 +179,23 @@ router.post('/api/auth/signup', (req, res) => {
 });
 
 
-router.get('/api/hospital', authenticateJWT, (req, res) => {
-    LocationModel.find()
-        .select()
-        .exec(function (err, locations) {
-            if (err) return res.status(500).json({ code: 0, error: err, description: "find locations error" });
+router.get('/api/hospital', authenticateJWT, async (req, res) => {
 
-            return res.status(200).json({ code: 2, hospitals: locations, description: "get hospital data successfully." })
+    let locations = await LocationModel.find().lean();
+
+    locations = await Promise.all(
+        locations.map(async (location) => {
+            try {
+                const waitTime = await WaitingTimeModel.findOne({ 'locationId': location.locId })
+                    .sort({ 'date': -1 }).lean();
+                return { ...location, waitTime };
+            }catch(err){
+                return res.status(500).json({ code: 0, error: err, description: "find waitTime error" });
+            }
         })
+    );
+
+    return res.status(200).json({ code: 2, hospitals: locations, description: "get hospital data successfully." })
 })
 
 

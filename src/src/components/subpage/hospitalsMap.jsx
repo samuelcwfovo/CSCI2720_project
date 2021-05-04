@@ -1,49 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { GoogleMapKey } from '../../assets/key.jsx';
+import '../../assets/css/hospitalsMap.css';
 
 
 import { LocalHospitalTwoTone } from '@material-ui/icons';
 
 
 
-const Mark = () => {
-    return (
-        <div style={{
-            position: 'absolute',
-            transform: 'translate(-50%, -50%)'
-        }}>
-            <LocalHospitalTwoTone className="fs-1 text-danger" />
-        </div>
-    )
-}
 
-const getMapBounds = (map, maps, locations) => {
-    const bounds = new maps.LatLngBounds();
-
-    locations.forEach((location) => {
-        bounds.extend(
-            new maps.LatLng(location.latitude, location.longitude),
-        );
-    });
-    return bounds;
-};
-
-const bindResizeListener = (map, maps, bounds) => {
-    maps.event.addDomListenerOnce(map, 'idle', () => {
-        maps.event.addDomListener(window, 'resize', () => {
-            map.fitBounds(bounds);
-        });
-    });
-};
-
-const apiIsLoaded = (map, maps, locations) => {
-    if (map) {
-        const bounds = getMapBounds(map, maps, locations);
-        map.fitBounds(bounds);
-        bindResizeListener(map, maps, bounds);
-    }
-};
 
 
 const HospitalsMap = () => {
@@ -73,10 +38,59 @@ const HospitalsMap = () => {
             })
 
     }
+    
+
+    const getMapBounds = (map, maps, locations) => {
+        const bounds = new maps.LatLngBounds();
+    
+        locations.forEach((location) => {
+            bounds.extend(
+                new maps.LatLng(location.latitude, location.longitude),
+            );
+        });
+        return bounds;
+    };
+    
+    const bindResizeListener = (map, maps, bounds) => {
+        maps.event.addDomListenerOnce(map, 'idle', () => {
+            maps.event.addDomListener(window, 'resize', () => {
+                map.fitBounds(bounds);
+            });
+        });
+    };
+    
+    const apiIsLoaded = (map, maps, locations) => {
+        const bounds = getMapBounds(map, maps, locations);
+        map.fitBounds(bounds);
+        bindResizeListener(map, maps, bounds);
+    
+        const infoWindow = new maps.InfoWindow();
+    
+        locations.map(element => {
+            const marker = new maps.Marker({
+                position: { lat: element.latitude, lng: element.longitude },
+                map,
+                animation: google.maps.Animation.DROP,
+                title: element.name,
+            });
+    
+            marker.addListener("click", () => {
+                infoWindow.close();
+                infoWindow.setContent(
+                    '<div class="marker-content">' +
+                        '<p>' + element.name + '</p>' +
+                        '<a href="/dashboard/hospitals/' + element.locId + '">details</a>' +
+                    '</div>'
+                );
+                infoWindow.open(marker.getMap(), marker);
+            })
+        })
+    };
+
 
     const content = () => {
         return (
-            <div style={{ height: '50vh', width: '100%' }}>
+            <div className="hospitals-map-content d-flex">
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: GoogleMapKey }}
                     defaultCenter={{
@@ -87,17 +101,6 @@ const HospitalsMap = () => {
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, locations)}
                 >
-                    {locations.map((element, index) => {
-                        console.log(element)
-                        return (
-                            <Mark
-                                key={index}
-                                lat={element.latitude}
-                                lng={element.longitude}
-                            />
-                        )
-                    })}
-
                 </GoogleMapReact>
             </div>
         )
@@ -105,9 +108,9 @@ const HospitalsMap = () => {
 
 
     return (
-        <div>
+        <>
             {locations.length > 0 ? content() : null}
-        </div >
+        </>
     )
 }
 
