@@ -36,7 +36,7 @@ class UserManage extends React.Component{
 		return(
 			<div>
 				<h1>Users Manage</h1>
-					<table>
+					<table className="table text-light bg-transparent">
 						<thead><tr><th> User ID </th><th> Username </th><th> Operations </th></tr></thead>
 						<tbody>
 							{this.state.data ? Object.keys(this.state.data).map(key => 
