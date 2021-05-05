@@ -1,0 +1,28 @@
+
+
+
+.hospitals-map-content {
+    width: 100%;
+    max-width: 1024px;
+    height: calc(100vh - 4rem);
+}
+
+
+@media (max-width: 1024px) {
+    .hospitals-map-content {
+        min-width: 100%;
+        height: 50vh !important;
+    }
+}
+
+
+
+.marker-content {
+    color : black;
+}
+
+.marker-content-detail {
+    color :blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
