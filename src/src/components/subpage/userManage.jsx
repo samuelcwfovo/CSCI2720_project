@@ -12,7 +12,7 @@ class UserManage extends React.Component{
       };
     }
 	
-	componentWillMount(){
+	getUser(){
 		fetch('/api/admin/getusers', {
 			method: 'POST',
 			credentials: 'include',
@@ -28,6 +28,42 @@ class UserManage extends React.Component{
             if (res.code === 2) {
                 console.log("get users succeeded", res)
 				this.setState({ data : res['users'] })
+            }
+        }).catch((error) => console.error(error));
+    }
+	
+	componentWillMount(){
+		this.getUser();
+    }
+	
+	updateUser = id => () => {
+		let f = document.getElementById("update-" + id);
+		console.log("update-id: " + id);
+		
+		fetch('/api/admin/updateuser', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+            body: JSON.stringify({
+				uid: id,
+                username: f.elements.username.value,
+                password: f.elements.password.value
+            })
+		})
+        .then(data => data.json())
+        .then(res => {
+			if (res.code === 0) {
+                console.log("internal errors", res)
+            }
+            if (res.code === 1) {
+                console.log("update user failed", res)
+            }
+            if (res.code === 2) {
+                console.log("update user succeeded", res)
+				this.getUser();
+				alert("Username/Password Updated");
             }
         }).catch((error) => console.error(error));
     }
@@ -50,20 +86,20 @@ class UserManage extends React.Component{
 
 										<Dropdown.Menu>
 											<Dropdown.Header>
-												<form>
+												<form id={"update-" + this.state.data[key]['userId']}>
 													<div className="py-3 mx-3 width-auto">
 														<label for="update-username">New Username</label>
-														<input type="text" className="form-control" id="update-username" placeholder="New Username" onInput={(e) => e.target.setCustomValidity('')} />
+														<input type="text" name="username" className="form-control" id="update-username" placeholder="New Username" onInput={(e) => e.target.setCustomValidity('')} />
 													</div>
 													
 													<div className="py-3 mx-3 width-auto">Or</div>
 													
 													<div className="py-3 mx-3 width-auto">
 														<label for="update-password">New Password</label>
-														<input type="password" className="form-control" id="update-password" placeholder="New Password" />
+														<input type="password" name="password" className="form-control" id="update-password" placeholder="New Password" />
 													</div>
 													<div className="py-5 mx-3">
-														<button type="button" className="btn btn-success btn-outline-light">Update</button>
+														<button type="button" className="btn btn-success btn-outline-light" onClick={this.updateUser(this.state.data[key]['userId'])}>Update</button>
 													</div>
 												</form>
 											</Dropdown.Header>
