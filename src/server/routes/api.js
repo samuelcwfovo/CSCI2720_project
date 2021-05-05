@@ -92,7 +92,12 @@ const authenticateJWT = (req, res, next) => {
                     if (err) return res.status(500).json({ code: 0, error: err, description: "db find user error." });
                     if (!user) return res.status(401).json({ code: 1, description: "username not found." });
 
-                    const token = jwt.sign({ userId: decoded.userId, userName: decoded.userName, admin: decoded.admin }, accessTokenSecret, { expiresIn: '1h' })
+                    const token = jwt.sign({ 
+                        userId: decoded.userId, 
+                        userName: decoded.userName, 
+                        admin: decoded.admin, 
+                        favouritePlace: decoded.favouritePlace,
+                    }, accessTokenSecret, { expiresIn: '1h' })
 
 
                     res.cookie('token', token, { maxAge: 900000 });
@@ -127,7 +132,8 @@ router.post('/api/auth/login', (req, res) => {
                     const payload = {
                         userId: user.userId,
                         userName: user.userName,
-                        admin: user.admin
+                        admin: user.admin,
+                        favouritePlace: user.favouritePlace,
                     }
 
                     const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
@@ -166,7 +172,8 @@ router.post('/api/auth/signup', (req, res) => {
                 const payload = {
                     userId: savedUser.userId,
                     userName: savedUser.userName,
-                    admin: savedUser.admin
+                    admin: savedUser.admin,
+                    favouritePlace: savedUser.favouritePlace,
                 }
 
                 const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })

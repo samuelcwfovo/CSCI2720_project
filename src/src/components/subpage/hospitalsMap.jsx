@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
+import MUIDataTable from "mui-datatables";
+import { Link, useHistory } from 'react-router-dom';
+
 import { GoogleMapKey } from '../../assets/key.jsx';
 import '../../assets/css/hospitalsMap.css';
-
-
-import { LocalHospitalTwoTone } from '@material-ui/icons';
-
-
-
 
 
 
@@ -38,11 +35,33 @@ const HospitalsMap = () => {
             })
 
     }
-    
+
+
+
+    return (
+        locations.length > 0 ?
+            <div className="row ">
+                <div className="col-lg">
+                    <MapContent locations={locations} />
+                </div>
+                <div className="col-lg">
+                    <TableContent locations={locations} />
+                </div>
+            </div>
+            : null
+
+    )
+
+}
+
+
+
+const MapContent = (props) => {
+    let history = useHistory();
 
     const getMapBounds = (map, maps, locations) => {
         const bounds = new maps.LatLngBounds();
-    
+
         locations.forEach((location) => {
             bounds.extend(
                 new maps.LatLng(location.latitude, location.longitude),
@@ -50,7 +69,7 @@ const HospitalsMap = () => {
         });
         return bounds;
     };
-    
+
     const bindResizeListener = (map, maps, bounds) => {
         maps.event.addDomListenerOnce(map, 'idle', () => {
             maps.event.addDomListener(window, 'resize', () => {
@@ -58,14 +77,14 @@ const HospitalsMap = () => {
             });
         });
     };
-    
+
     const apiIsLoaded = (map, maps, locations) => {
         const bounds = getMapBounds(map, maps, locations);
         map.fitBounds(bounds);
         bindResizeListener(map, maps, bounds);
-    
+
         const infoWindow = new maps.InfoWindow();
-    
+
         locations.map(element => {
             const marker = new maps.Marker({
                 position: { lat: element.latitude, lng: element.longitude },
@@ -73,45 +92,108 @@ const HospitalsMap = () => {
                 animation: google.maps.Animation.DROP,
                 title: element.name,
             });
-    
+
             marker.addListener("click", () => {
                 infoWindow.close();
-                infoWindow.setContent(
-                    '<div class="marker-content">' +
-                        '<p>' + element.name + '</p>' +
-                        '<a href="/dashboard/hospitals/' + element.locId + '">details</a>' +
-                    '</div>'
-                );
+
+                let detail = document.createElement('div');
+                detail.className = "marker-content-detail";
+                detail.innerText = "details"
+                detail.onclick = () => {
+                    history.push("/dashboard/hospitals/" + element.locId, );
+                };
+
+                let div = document.createElement('div');
+                div.className = "marker-content";
+                div.innerHTML = '<p>' + element.name + '</p>' ;
+                div.appendChild(detail);
+
+                infoWindow.setContent(div);
                 infoWindow.open(marker.getMap(), marker);
             })
         })
     };
 
 
-    const content = () => {
-        return (
-            <div className="hospitals-map-content d-flex">
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key: GoogleMapKey }}
-                    defaultCenter={{
-                        lat: 22.31930137022674,
-                        lng: 114.16997366890004
-                    }}
-                    defaultZoom={10}
-                    yesIWantToUseGoogleMapApiInternals
-                    onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, locations)}
-                >
-                </GoogleMapReact>
-            </div>
-        )
-    }
-
-
     return (
-        <>
-            {locations.length > 0 ? content() : null}
-        </>
+        <div className="hospitals-map-content">
+            <GoogleMapReact
+                bootstrapURLKeys={{ key: GoogleMapKey }}
+                defaultCenter={{
+                    lat: 22.31930137022674,
+                    lng: 114.16997366890004
+                }}
+                defaultZoom={10}
+                yesIWantToUseGoogleMapApiInternals
+                onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, props.locations)}
+            >
+            </GoogleMapReact>
+        </div>
     )
 }
+
+
+const TableContent = (props) => {
+
+    const columns = [
+        {
+            name: "Hospitals",
+            options: {
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(tableMeta)
+                    return (
+                        <Link to={"/dashboard/hospitals/" + tableMeta.rowData[2]} >
+                            {value}
+                        </Link>
+                    )
+                }
+            }
+        },
+        {
+            name: 'Wait Time',
+            lable: 'Wait Time',
+            option: {},
+        },
+        {
+            name: 'locId',
+            options:{
+                display: 'excluded',
+                filter: false,
+            }
+        }
+    ];
+
+    let data = []
+    props.locations.forEach(element => {
+        data.push({ "Hospitals": element.name, "Wait Time": element.waitTime.waitingTime, 'locId': element.locId })
+    });
+
+    const options = {
+        responsive: 'standard',
+        print: false,
+        download: false,
+        viewColumns: false,
+        filter: true,
+        selectableRowsHideCheckboxes: true,
+        filterType: 'textField',
+    };
+
+    return (
+        <div>
+            <MUIDataTable
+                data={data}
+                columns={columns}
+                options={options}
+            />
+        </div>
+    )
+}
+
+
+
+
+
+
+
 
 export default HospitalsMap;

@@ -46,9 +46,11 @@ const LoginForm = () => {
                     }
 
                     if (res.code === 2) {
+                        console.log(res)
                         sessionStorage.setItem('userId', res.userInfo.userId);
                         sessionStorage.setItem('userName', res.userInfo.userName);
                         sessionStorage.setItem('admin', res.userInfo.admin);
+                        sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
                         history.push("/");
                     }
@@ -98,6 +100,7 @@ const LoginForm = () => {
                         sessionStorage.setItem('userId', res.userInfo.userId);
                         sessionStorage.setItem('userName', res.userInfo.userName);
                         sessionStorage.setItem('admin', res.userInfo.admin);
+                        sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
                         history.push("/");
                     }
@@ -210,6 +213,7 @@ const Login = () => {
         })
             .then(data => data.json())
             .then(res => {
+                console.log(res)
                 if (res.code === 1) {
                     console.log("token login fail", res)
                 }
@@ -217,6 +221,8 @@ const Login = () => {
                     sessionStorage.setItem('userId', res.userInfo.userId);
                     sessionStorage.setItem('userName', res.userInfo.userName);
                     sessionStorage.setItem('admin', res.userInfo.admin);
+                    sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
+
                     authUtil.setAuth(true)
                     history.push("/");
                     console.log('backgorund login ' + res.userInfo.admin)

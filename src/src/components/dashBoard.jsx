@@ -6,12 +6,13 @@ import {
     PeopleAltOutlined, Menu, AccountCircle, Fullscreen, FullscreenExit
 } from '@material-ui/icons';
 
-import { Link, Route, Switch, Redirect, useRouteMatch, useHistory } from 'react-router-dom';
+import { Link, Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../context/ControlContext.jsx';
 
 
 import HospitalsMap from './subpage/hospitalsMap.jsx';
+import HospitalDetail from './subpage/hospitalDetail.jsx';
 import FavouritePlace from './subpage/favouritePlace.jsx';
 import HospitalsManage from './subpage/hospitalsManage.jsx';
 import UserManage from './subpage/userManage.jsx';
@@ -108,8 +109,6 @@ const Dashboard = () => {
         }
     }
 
-
-
     return (
         <div className="dashboard-wrapper">
             <div id="dashboard-filter" />
@@ -176,6 +175,7 @@ const Dashboard = () => {
 
                 <div className="container-fluid">
                     <Switch>
+                        <Route path="/dashboard/hospitals/:locId" component={HospitalDetail} />
                         <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
                         <Route path={"/dashboard/favourite"} component={FavouritePlace} />
                         <Route path={"/dashboard/hospitals-manage"} component={HospitalsManage} />
@@ -183,7 +183,6 @@ const Dashboard = () => {
                         <Route exact path="/dashboard">
                             <Redirect to='/dashboard/hospitals' />
                         </Route>
-
                     </Switch>
                 </div>
             </main>

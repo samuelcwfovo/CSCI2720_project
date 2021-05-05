@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect, useLocation } from 'react-router-dom';
 
 import Loginboard from './components/login.jsx';
 import Dashboard from './components/dashBoard.jsx';
@@ -16,6 +16,8 @@ const App = () => {
     useEffect(() => {
     })
 
+
+
     return (
         <AuthContext.Provider value={{
             isAuth: isAuth,
@@ -29,9 +31,9 @@ const App = () => {
                     <PrivateRoute path="/dashboard" component={Dashboard} />
 
 
-                    <PrivateRoute exact path="/">
-                        <Redirect to='/dashboard' />
-                    </PrivateRoute>
+                    <PrivateRoute exact strict path="/" component={Dashboard} />
+                    {/* <Redirect to='/dashboard' />
+                    </PrivateRoute> */}
 
 
 
@@ -45,7 +47,13 @@ const App = () => {
 function PrivateRoute({ children, ...rest }) {
     const authUtil = useContext(AuthContext);
 
+    let location = useLocation()
+    console.log(location)
+
+    console.log(authUtil)
+
     if (!authUtil.isAuth) {
+        console.log("not auth to private route")
         return (
             <Route {...rest}>
                 <Redirect to='/login' />
@@ -54,7 +62,7 @@ function PrivateRoute({ children, ...rest }) {
     }
 
     return (
-        <Route {...rest} render={()=> children} />
+        <Route {...rest} render={() => children} />
     );
 }
 
