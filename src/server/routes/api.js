@@ -92,10 +92,10 @@ const authenticateJWT = (req, res, next) => {
                     if (err) return res.status(500).json({ code: 0, error: err, description: "db find user error." });
                     if (!user) return res.status(401).json({ code: 1, description: "username not found." });
 
-                    const token = jwt.sign({ 
-                        userId: decoded.userId, 
-                        userName: decoded.userName, 
-                        admin: decoded.admin, 
+                    const token = jwt.sign({
+                        userId: decoded.userId,
+                        userName: decoded.userName,
+                        admin: decoded.admin,
                         favouritePlace: decoded.favouritePlace,
                     }, accessTokenSecret, { expiresIn: '1h' })
 
@@ -185,6 +185,23 @@ router.post('/api/auth/signup', (req, res) => {
     });
 });
 
+router.get('/api/hospital/:locId', authenticateJWT, (req, res) => {
+    
+    Promise.all([
+        LocationModel.findOne({ locId: req.params.locId }).lean(),
+        WaitingTimeModel.findOne({ locationId: req.params.locId }).lean()
+    ]).then(results => {
+
+        if (!results[0]) return res.status(400).json({ code: 1, error: err, description: "location not found." });
+        if (!results[1]) return res.status(400).json({ code: 1, error: err, description: "waitTime not found." });
+
+        results[0].waitTime = results[1]
+
+        return res.status(200).json({ code: 2, location: results[0], description: "find location succeeded" });
+    }).catch(err => {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "find location by locID error" });
+    })
+})
 
 router.get('/api/hospital', authenticateJWT, async (req, res) => {
 
@@ -205,11 +222,34 @@ router.get('/api/hospital', authenticateJWT, async (req, res) => {
     return res.status(200).json({ code: 2, hospitals: locations, description: "get hospital data successfully." })
 })
 
+router.get('/api/comment/:locId', authenticateJWT, (req, res) => {
+
+    CommentModel.find({ locationId: req.params.locId }, function (err, comments) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "find comment error" });
+
+        return res.status(200).json({ code: 2, comments, description: "find comment succeeded" });
+    })
+})
+
+router.post('/api/comment', authenticateJWT, (req, res) => {
+
+    let newComment = new CommentModel({
+        locationId: req.body.locationId,
+        author: req.body.author,
+        comment: req.body.comment,
+        creationDate: Date.now(),
+    })
+
+    newComment.save(function (err, savedComment) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "save comment error" });
+
+        return res.status(201).json({ code: 2, description: "comment created." })
+
+    })
+})
+
 
 router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
-    const decoded = req.decoded;
-    if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
-
 
     const dataP = retrieveHospitalData.getHospData();
 

@@ -33,6 +33,7 @@ const Dashboard = () => {
     let history = useHistory();
 
     useLayoutEffect(() => {
+        console.log("dashboard loading")
         document.body.classList.add('dashboard-body');
         return () => {
             document.body.classList.remove('dashboard-body');

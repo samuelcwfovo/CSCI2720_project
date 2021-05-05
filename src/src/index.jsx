@@ -31,9 +31,9 @@ const App = () => {
                     <PrivateRoute path="/dashboard" component={Dashboard} />
 
 
-                    <PrivateRoute exact strict path="/" component={Dashboard} />
-                    {/* <Redirect to='/dashboard' />
-                    </PrivateRoute> */}
+                    <PrivateRoute exact strict path="/"  >
+                        <Redirect to='/dashboard' />
+                    </PrivateRoute>
 
 
 
@@ -48,15 +48,23 @@ function PrivateRoute({ children, ...rest }) {
     const authUtil = useContext(AuthContext);
 
     let location = useLocation()
+    console.log("location")
     console.log(location)
 
     console.log(authUtil)
 
     if (!authUtil.isAuth) {
         console.log("not auth to private route")
+        console.log(rest)
         return (
             <Route {...rest}>
                 <Redirect to='/login' />
+                <Redirect
+                    to={{
+                        pathname: "/login",
+                        state: { from: location.pathname }
+                    }}
+                />
             </Route>
         )
     }
@@ -65,6 +73,7 @@ function PrivateRoute({ children, ...rest }) {
         <Route {...rest} render={() => children} />
     );
 }
+
 
 
 ReactDOM.render(<App />, document.getElementById('app'));

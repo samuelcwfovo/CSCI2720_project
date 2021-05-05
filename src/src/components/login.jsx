@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 import '.././assets/css/login.css';
 import { AuthContext } from '../context/ControlContext.jsx';
@@ -11,6 +11,9 @@ const LoginForm = () => {
     const [login, setLogin] = useState(true);
     const authUtil = useContext(AuthContext);
     let history = useHistory();
+    let location = useLocation();
+
+    let toPath = location.state ? location.state.from : '/';
 
     const onArrowClick = () => {
         setLogin(!login)
@@ -52,7 +55,7 @@ const LoginForm = () => {
                         sessionStorage.setItem('admin', res.userInfo.admin);
                         sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
-                        history.push("/");
+                        history.push(toPath);
                     }
 
                 })
@@ -102,7 +105,7 @@ const LoginForm = () => {
                         sessionStorage.setItem('admin', res.userInfo.admin);
                         sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
-                        history.push("/");
+                        history.push(toPath);
                     }
                 })
 
@@ -187,17 +190,22 @@ const LoginForm = () => {
 
 
 const Login = () => {
+
+
+
     const [hovered, setHovered] = useState(false);
     const [clicked, setClicked] = useState(false);
 
     const authUtil = useContext(AuthContext);
     let history = useHistory();
+    let location = useLocation();
 
+    let toPath = location.state ? location.state.from : '/';
 
     useLayoutEffect(() => {
         document.body.classList.add('bg-login');
         backgroundLogin();
-
+        console.log("background login");
         return () => {
             document.body.classList.remove('bg-login');
         };
@@ -224,7 +232,7 @@ const Login = () => {
                     sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
 
                     authUtil.setAuth(true)
-                    history.push("/");
+                    history.push(toPath);
                     console.log('backgorund login ' + res.userInfo.admin)
                 }
             })

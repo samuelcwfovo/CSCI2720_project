@@ -27,7 +27,6 @@ const HospitalsMap = () => {
             .then(data => data.json())
             .then(res => {
                 if (res.code === 2) {
-                    console.log(res.hospitals)
                     setLocations(res.hospitals)
                 } else {
                     console.log("fetch hospital data fail", res)
@@ -41,7 +40,7 @@ const HospitalsMap = () => {
     return (
         locations.length > 0 ?
             <div className="row ">
-                <div className="col-lg">
+                <div className="col-lg" style={{ flex: 2 }}>
                     <MapContent locations={locations} />
                 </div>
                 <div className="col-lg">
@@ -100,12 +99,14 @@ const MapContent = (props) => {
                 detail.className = "marker-content-detail";
                 detail.innerText = "details"
                 detail.onclick = () => {
-                    history.push("/dashboard/hospitals/" + element.locId, );
+                    history.push({
+                        pathname: "/dashboard/hospitals/" + element.locId
+                    });
                 };
 
                 let div = document.createElement('div');
                 div.className = "marker-content";
-                div.innerHTML = '<p>' + element.name + '</p>' ;
+                div.innerHTML = '<p>' + element.name + '</p>';
                 div.appendChild(detail);
 
                 infoWindow.setContent(div);
@@ -140,9 +141,10 @@ const TableContent = (props) => {
             name: "Hospitals",
             options: {
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    console.log(tableMeta)
                     return (
-                        <Link to={"/dashboard/hospitals/" + tableMeta.rowData[2]} >
+                        <Link to={{
+                            pathname: "/dashboard/hospitals/" + tableMeta.rowData[2]
+                        }} >
                             {value}
                         </Link>
                     )
@@ -156,7 +158,7 @@ const TableContent = (props) => {
         },
         {
             name: 'locId',
-            options:{
+            options: {
                 display: 'excluded',
                 filter: false,
             }
@@ -179,13 +181,11 @@ const TableContent = (props) => {
     };
 
     return (
-        <div>
-            <MUIDataTable
-                data={data}
-                columns={columns}
-                options={options}
-            />
-        </div>
+        <MUIDataTable className="my-2 my-lg-0"
+            data={data}
+            columns={columns}
+            options={options}
+        />
     )
 }
 
