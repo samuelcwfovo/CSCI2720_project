@@ -1,0 +1,21 @@
+.hospital-detail-map {
+    width: 100%;
+    height: calc(100vh - 4rem);
+}
+
+@media (max-width: 992px) {
+    .hospital-detail-map {
+        min-width: 100%;
+        height: 50vh !important;
+    }
+}
+
+.hospital-detail-table{
+    background: #2c3a68;
+    padding: 40px 30px;
+}
+
+.comment-pic {
+    width:45px !important;
+    height: auto !important;
+}
