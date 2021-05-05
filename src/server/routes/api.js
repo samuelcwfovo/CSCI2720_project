@@ -253,4 +253,31 @@ router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
     })
 });
 
+router.post('/api/admin/updateuser', authenticateJWT, (req, res) => {
+	const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
+
+	if (!req.body.username && !req.body.password){
+		return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
+	}
+
+    bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
+		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+		
+		var uSet = {};
+	
+		if (req.body.username) uSet.userName = req.body.username;
+		if (req.body.password) uSet.hashedPassword = hashpw;
+			
+		uSet = { $set: uSet }
+
+        UserModel.updateOne({ 'userId': req.body.uid }, uSet, function (err, user) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });
+            if (!user) return res.status(400).json({ code: 1, description: "cannot find the targeted user." });
+			
+            return res.status(201).json({ code: 2, description: "Username/Password updated." })
+        })
+    });
+});
+
 module.exports = router;
