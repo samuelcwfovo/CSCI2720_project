@@ -1,11 +1,11 @@
 function isEmpty(obj) {
-    return JSON.stringify(obj) == {};
+    return JSON.stringify(obj) == '{}';
 }
 
-function retriveQuery(orig, validCol) {
+function retrieveQuery(orig, validCol) {
     let query = {};
     for (col in orig) {
-        if (col in validCol) {
+        if (validCol.includes(col)) {
             query[col] = orig[col];
         }
     }
