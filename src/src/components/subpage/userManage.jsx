@@ -96,6 +96,33 @@ class UserManage extends React.Component{
             }
         }).catch((error) => console.error(error));
     }
+	
+	deleteUser = id => () => {
+		fetch('/api/admin/user', {
+			method: 'DELETE',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+            body: JSON.stringify({
+				uid: id,
+            })
+		})
+        .then(data => data.json())
+        .then(res => {
+			if (res.code === 0) {
+                console.log("internal errors", res)
+            }
+            if (res.code === 1) {
+                console.log("delete user failed", res)
+            }
+            if (res.code === 2) {
+                console.log("delete user succeeded", res)
+				this.getUser();
+				alert("User Deleted");
+            }
+        }).catch((error) => console.error(error));
+    }
 
 	render(){
 		return(
@@ -163,7 +190,7 @@ class UserManage extends React.Component{
 											</Dropdown.Header>
 										</Dropdown.Menu>
 									</Dropdown>
-									<button type="button" className="btn btn-danger">Delete User</button>
+									<button type="button" className="btn btn-danger" onClick={this.deleteUser(this.state.data[key]['userId'])}>Delete User</button>
 								</td></tr>
 								) : <tr><td>Loading</td></tr>}
 						</tbody>
