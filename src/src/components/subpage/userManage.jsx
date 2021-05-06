@@ -40,7 +40,7 @@ class UserManage extends React.Component{
 		console.log("update-id: " + id);
 		
 		fetch('/api/admin/user', {
-			method: 'POST',
+			method: 'PUT',
 			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
