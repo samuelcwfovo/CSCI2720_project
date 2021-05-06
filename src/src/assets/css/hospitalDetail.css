@@ -1,21 +1,50 @@
 .hospital-detail-map {
-    width: 100%;
-    height: calc(100vh - 4rem);
+    margin-top: 1rem;
+    width     : 100%;
+    height    : calc(100vh - 7rem);
+    box-shadow:
+        inset 0 -3em 3em rgba(0, 0, 0, 0.1),
+        0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
 }
+
+.hospital-detail-rest {
+    margin-top: 1rem;
+    width     : 100%;
+    height    : calc(100vh - 7rem);
+
+}
+
+.hospital-detail-info {
+    box-shadow:
+        1em 1em 3em rgba(0, 0, 0, 0.1),
+        0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+
+}
+
+.hospital-detail-info-header {
+    background-color: #28c19e;
+    padding: 1em 2em;
+}
+
+.hospital-detail-info-header h4 {
+    margin: 0;
+}
+
 
 @media (max-width: 992px) {
     .hospital-detail-map {
         min-width: 100%;
-        height: 50vh !important;
+        height   : 50vh !important;
     }
 }
 
-.hospital-detail-table{
-    background: #2c3a68;
-    padding: 40px 30px;
+.hospital-detail-info-table {
+    background: #fff;
+    padding   : 40px 30px;
+    color: #777777;
 }
 
 .comment-pic {
-    width:45px !important;
+    width : 45px !important;
     height: auto !important;
 }

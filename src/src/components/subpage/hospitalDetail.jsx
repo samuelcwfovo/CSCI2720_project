@@ -205,13 +205,13 @@ const HospitalDetail = () => {
 
             </div>
             <div className="col-lg">
-                <div className="d-flex flex-column">
-                    <div>
-                        <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex flex-column hospital-detail-rest">
+                    <div className="hospital-detail-info">
+                        <div className="d-flex align-items-center justify-content-between hospital-detail-info-header">
                             <h4>Hospital Details</h4>
                             {favourite.includes(Number(locId)) ? <Favorite onClick={() => removeFavourite()} /> : <FavoriteBorder onClick={() => addFavourite()} />}
                         </div>
-                        <div className="hospital-detail-table">
+                        <div className="hospital-detail-info-table">
                             <table className="">
                                 <tbody>
                                     <tr>
