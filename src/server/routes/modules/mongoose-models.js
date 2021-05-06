@@ -19,7 +19,6 @@ var LocationSchema = Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
 });
-UserSchema.plugin(AutoIncrement, { inc_field: 'locId' });
 var LocationModel = mongoose.model('Location', LocationSchema);
 
 
