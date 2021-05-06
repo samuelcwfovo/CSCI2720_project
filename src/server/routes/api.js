@@ -293,8 +293,42 @@ router.put('/api/favourite', authenticateJWT, (req, res) => {
 router.get('/api/historical/past-10-hour', (req, res) => {
     WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
         let latestUpdateTime = waitTime.date.getTime();
-        
-        console.log(latestUpdateTime, Date.now())
+        pastTenHrs = [latestUpdateTime];
+		for (var i = 0; i < 9; i++) {
+			pastTenHrs.unshift(pastTenHrs[0] - 3600000);
+		}
+		
+		links = [];
+		for (var i = 0; i < 10; i++){
+			link = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
+			
+			const t = new Date(pastTenHrs[i]);
+			let YYYY = t.getFullYear() + "";
+			let MM = t.getMonth() + 1;
+			if (MM < 10)
+				MM = "" + "0" + MM;
+			else
+				MM = MM + "";
+			let DD = t.getDate();
+			if (DD < 10)
+				DD = "" + "0" + DD;
+			else
+				DD = DD + "";
+			let hh = t.getHours();
+			if (hh < 10)
+				hh = "" + "0" + hh;
+			else
+				hh = hh + "";
+			let mm = t.getMinutes();
+			if (mm < 10)
+				mm = "" + "0" + mm;
+			else
+				mm = mm + "";
+			
+			let dateFormat = YYYY + MM + DD + "-" + hh + mm;
+			link += dateFormat;
+			links.push(link);
+		}
     })
 })
 
