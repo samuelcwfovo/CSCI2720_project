@@ -13,4 +13,4 @@ function retrieveQuery(orig, validCol) {
     return query;
 }
 
-module.exports = {isEmpty, retriveQuery};
+module.exports = {isEmpty, retrieveQuery};
