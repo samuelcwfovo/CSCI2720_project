@@ -35,6 +35,36 @@ class UserManage extends React.Component{
 		this.getUser();
     }
 	
+	createUser = () => {
+		let f = document.getElementById("create");
+		
+		fetch('/api/admin/user', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+            body: JSON.stringify({
+                username: f.elements.username.value,
+                password: f.elements.password.value
+            })
+		})
+        .then(data => data.json())
+        .then(res => {
+			if (res.code === 0) {
+                console.log("internal errors", res)
+            }
+            if (res.code === 1) {
+                console.log("create user failed", res)
+            }
+            if (res.code === 2) {
+                console.log("create user succeeded", res)
+				this.getUser();
+				alert("New User Created");
+            }
+        }).catch((error) => console.error(error));
+    }
+	
 	updateUser = id => () => {
 		let f = document.getElementById("update-" + id);
 		console.log("update-id: " + id);
@@ -92,7 +122,7 @@ class UserManage extends React.Component{
 											<input type="password" name="password" className="form-control" id="update-password" placeholder="New Password" />
 										</div>
 										<div className="py-5 mx-3">
-											<button type="button" className="btn btn-primary btn-outline-light">Create</button>
+											<button type="button" className="btn btn-primary btn-outline-light" onClick={this.createUser}>Create</button>
 										</div>
 									</form>
 								</Dropdown.Header>
