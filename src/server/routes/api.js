@@ -309,6 +309,35 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
     }).catch(error => console.log('caught', error))
 });
 
+router.post('/api/admin/user', authenticateJWT, (req, res) => {
+	const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "create user permission denied." });
+
+	if (!req.body.username || !req.body.password){
+		return res.status(400).json({ code: 1, description: "Please enter Username/Password to create new user" });
+	}
+
+    bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
+		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+
+		UserModel.findOne({ 'userName': req.body.username }, function (err, user) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "find exist user error" });
+            if (user) return res.status(400).json({ code: 1, description: "user name already used." });
+
+            let newUser = new UserModel({
+                userName: req.body.username,
+                hashedPassword: hashpw,
+                admin: false,
+            })
+
+            newUser.save(function (err, savedUser) {
+                if (err) return res.status(500).json({ code: 0, error: err, description: "save user error" });
+                return res.status(201).json({ code: 2, description: "created." })
+            })
+        })
+    });
+});
+
 router.get('/api/admin/user', authenticateJWT, (req, res) => {
     UserModel.find({},
         {
@@ -324,7 +353,7 @@ router.get('/api/admin/user', authenticateJWT, (req, res) => {
 
 router.put('/api/admin/user', authenticateJWT, (req, res) => {
 	const decoded = req.decoded;
-    if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "update user permission denied." });
 
 	if (!req.body.username && !req.body.password){
 		return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
