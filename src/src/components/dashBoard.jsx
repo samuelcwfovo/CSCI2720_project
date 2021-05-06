@@ -33,13 +33,42 @@ const Dashboard = () => {
     let history = useHistory();
 
     useLayoutEffect(() => {
-        console.log("dashboard loading")
         document.body.classList.add('dashboard-body');
+        setCurrentNav();
         return () => {
             document.body.classList.remove('dashboard-body');
         };
     }, []);
 
+    const setCurrentNav = () => {
+        let path = history.location.pathname;
+
+        let data = [
+            {
+                name: 'hospitals',
+                id: 0,
+            },
+            {
+                name: 'favourite',
+                id: 1,
+            },
+            {
+                name: 'places-manage',
+                id: 3,
+            },
+            {
+                name: 'users-manage',
+                id: 4,
+            },
+        ]
+
+        data.forEach(element => {
+            if (path.includes(element.name)) {
+                setSelect(element.id)
+            }
+        })
+
+    }
 
     //delete cookie + set global auth false
     const Logout = () => {
@@ -59,26 +88,26 @@ const Dashboard = () => {
 
         },
         {
-            name: "Favourite places",
+            name: "Favourite",
             adminOnly: false,
             link: 'favourite',
             icon: FavoriteTwoTone
         },
         {
-            name: "Historical data",
+            name: "Historical",
             adminOnly: false,
             link: 'favourite',
             icon: DescriptionOutlined
 
         },
         {
-            name: "Hospitals management",
+            name: "Place Data",
             adminOnly: true,
-            link: "hospitals-manage",
+            link: "places-manage",
             icon: DescriptionOutlined
         },
         {
-            name: "Users management",
+            name: "User Data",
             adminOnly: true,
             link: "users-manage",
             icon: PeopleAltOutlined
@@ -138,8 +167,8 @@ const Dashboard = () => {
                         }
                     </div>
 
-                    <div className="d-flex align-items-center flex-row justify-content-around p-4" style={{borderTop:"2px solid rgba(133, 133, 133, 0.1)"}}>
-                        <button type="button" className="btn btn-outline-info" onClick={() => Logout()}>LOGOUT</button>
+                    <div className="d-flex align-items-center flex-row justify-content-around p-4" style={{ borderTop: "2px solid rgba(133, 133, 133, 0.1)" }}>
+                        <button type="button" className="btn btn-outline-light" onClick={() => Logout()}>LOGOUT</button>
                         <div id="full-screen" className="d-none" onClick={() => fullScreenClick()}>
                             {fullScreen ? <FullscreenExit /> : <Fullscreen />}
                         </div>
@@ -149,17 +178,17 @@ const Dashboard = () => {
                 <a href="#" id="sidenav-close" title="Close Menu" aria-label="Close Menu"></a>
             </aside>
             <main className="dashboard-main">
-                <header className="sticky-top p-2 header">
+                <header className="sticky-top p-3 header">
                     <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
                             <a href="#sidenav-open" id="open-menu" className="d-none mr-2" title="Open Menu" aria-label="Open Menu">
                                 <Menu />
                             </a>
-                            <div className="fw-bold mx-2 fs-3">Dashboard</div>
+                            <div className="fw-bold mx-2 fs-3 theme-text-color">{navItem[selected].name}</div>
                         </div>
                         <div className="d-flex align-items-center">
-                            <span className="fs-5">{userName}</span>
-                            <AccountCircle className="mx-2 fs-2" />
+                            <span className="fs-5 theme-text-color" style={{ fontWeight: 900 }}>{userName}</span>
+                            <AccountCircle className="mx-2 fs-2" style={{ color: 'black' }} />
                         </div>
                     </div>
 
@@ -174,12 +203,12 @@ const Dashboard = () => {
 
                 </header>
 
-                <div className="container-fluid">
+                <div className="container-fluid dashboard-contaioner">
                     <Switch>
                         <Route path="/dashboard/hospitals/:locId" component={HospitalDetail} />
                         <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
                         <Route path={"/dashboard/favourite"} component={FavouritePlace} />
-                        <Route path={"/dashboard/hospitals-manage"} component={HospitalsManage} />
+                        <Route path={"/dashboard/places-manage"} component={HospitalsManage} />
                         <Route path={"/dashboard/users-manage"} component={UserManage} />
                         <Route exact path="/dashboard">
                             <Redirect to='/dashboard/hospitals' />

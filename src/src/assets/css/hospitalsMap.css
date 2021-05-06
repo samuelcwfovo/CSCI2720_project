@@ -1,27 +1,30 @@
+.hospitals-map-content,
+.hospitals-map-table {
+    margin-top: 1rem;
+    width     : 100%;
+    height    : calc(100vh - 7rem);
+    box-shadow:
+        inset 0 -3em 3em rgba(0, 0, 0, 0.1),
+        0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
 
-
-
-.hospitals-map-content {
-    width: 100%;
-    height: calc(100vh - 4rem);
 }
 
 
 @media (max-width: 992px) {
     .hospitals-map-content {
         min-width: 100%;
-        height: 50vh !important;
+        height   : 50vh !important;
     }
 }
 
 
 
 .marker-content {
-    color : black;
+    color: black;
 }
 
 .marker-content-detail {
-    color :blue;
+    color          : blue;
     text-decoration: underline;
-    cursor: pointer;
+    cursor         : pointer;
 }

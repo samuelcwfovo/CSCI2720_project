@@ -122,16 +122,15 @@ const authenticateJWT = (req, res, next) => {
                     if (!user) return res.status(401).json({ code: 1, description: "username not found." });
 
                     const token = jwt.sign({
-                        userId: decoded.userId,
-                        userName: decoded.userName,
-                        admin: decoded.admin,
-                        favouritePlace: decoded.favouritePlace,
+                        userId: user.userId,
+                        userName: user.userName,
+                        admin: user.admin,
                     }, accessTokenSecret, { expiresIn: '1h' })
 
 
                     res.cookie('token', token, { maxAge: 900000 });
 
-                    req.decoded = decoded
+                    req.decoded = user;
                     next()
                 })
         }
@@ -162,7 +161,6 @@ router.post('/api/auth/login', (req, res) => {
                         userId: user.userId,
                         userName: user.userName,
                         admin: user.admin,
-                        favouritePlace: user.favouritePlace,
                     }
 
                     const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
@@ -202,7 +200,6 @@ router.post('/api/auth/signup', (req, res) => {
                     userId: savedUser.userId,
                     userName: savedUser.userName,
                     admin: savedUser.admin,
-                    favouritePlace: savedUser.favouritePlace,
                 }
 
                 const token = jwt.sign(payload, accessTokenSecret, { expiresIn: '1h' })
@@ -277,8 +274,26 @@ router.post('/api/comment', authenticateJWT, (req, res) => {
     })
 })
 
+router.get('/api/favourite', authenticateJWT, (req, res) => {
+    return res.status(201).json({ code: 2, favouritePlaces: req.decoded.favouritePlace, description: "get favourite place sucess." })
+})
+
+router.put('/api/favourite', authenticateJWT, (req, res) => {
+    console.log("put favourite", req.decoded.userId)
+
+    UserModel.updateOne({ 'userId': req.decoded.userId }, { $set: { favouritePlace: req.body.favourite } }, function (err, user) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "update favourite place error" });
+        return res.status(201).json({ code: 2, description: "favourite place updated." })
+    })
+
+
+
+})
+
 
 router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
+
+    if (!req.decoded.admin) { return res.status(401).json({ code: 1, error: err, description: "not auth." }) };
 
     const dataP = retrieveHospitalData.getHospData();
 
@@ -310,6 +325,9 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
 });
 
 router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
+
+    if (!req.decoded.admin) { return res.status(401).json({ code: 1, error: err, description: "not auth." }) };
+
     UserModel.find({},
         {
             userId: 1,

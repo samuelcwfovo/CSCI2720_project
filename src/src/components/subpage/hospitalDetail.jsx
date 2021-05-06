@@ -13,13 +13,14 @@ const HospitalDetail = () => {
 
     const [comments, setComments] = useState([]);
     const [location, setLocation] = useState(null);
+    const [favourite, setFavourite] = useState([]);
 
     const [, setTick] = useState(0);
 
     useEffect(() => {
         FetchLocation();
         FetchComment();
-
+        FetchFavourite();
     }, []);
 
     const FetchLocation = () => {
@@ -60,6 +61,25 @@ const HospitalDetail = () => {
             })
     }
 
+    const FetchFavourite = () => {
+        fetch('/api/favourite/', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    console.log(res)
+                    setFavourite(res.favouritePlaces)
+                } else {
+                    console.log("fetch favourite Places fail", res)
+                }
+            })
+    }
+
     const CommentSubmit = () => {
 
         let comment = document.querySelector("#comment-text")
@@ -80,7 +100,7 @@ const HospitalDetail = () => {
                 .then(data => data.json())
                 .then(res => {
                     if (res.code === 2) {
-
+                        console.log('comment added.')
                     } else {
                         console.log("submit comment fail ", res)
                     }
@@ -97,9 +117,64 @@ const HospitalDetail = () => {
             setComments(tempComments)
             //fix react not rerender
             setTick(tick => tick + 1);
-
+            comment.value = "";
 
         }
+    }
+
+    const addFavourite = () => {
+        let tempFavourite = favourite;
+
+        tempFavourite.indexOf(Number(locId)) === -1 ? tempFavourite.push(Number(locId)) : console.log("This locId already exists");
+
+        fetch('/api/favourite', {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                favourite: tempFavourite,
+            })
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    setFavourite(tempFavourite);
+                    setTick(tick => tick + 1);
+
+                } else {
+                    console.log("add favourite place fail ", res)
+                }
+            })
+
+    }
+
+    const removeFavourite = () => {
+        let tempFavourite = favourite;
+        tempFavourite = tempFavourite.filter(item => item !== Number(locId));
+
+        fetch('/api/favourite', {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                favourite: tempFavourite,
+            })
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    setFavourite(tempFavourite);
+                    setTick(tick => tick + 1);
+
+                } else {
+                    console.log("remove favourite place fail ", res)
+                }
+            })
+
     }
 
 
@@ -134,7 +209,7 @@ const HospitalDetail = () => {
                     <div>
                         <div className="d-flex align-items-center justify-content-between">
                             <h4>Hospital Details</h4>
-                            <FavoriteBorder />
+                            {favourite.includes(Number(locId)) ? <Favorite onClick={() => removeFavourite()} /> : <FavoriteBorder onClick={() => addFavourite()} />}
                         </div>
                         <div className="hospital-detail-table">
                             <table className="">

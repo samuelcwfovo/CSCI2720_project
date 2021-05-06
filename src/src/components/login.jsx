@@ -53,7 +53,6 @@ const LoginForm = () => {
                         sessionStorage.setItem('userId', res.userInfo.userId);
                         sessionStorage.setItem('userName', res.userInfo.userName);
                         sessionStorage.setItem('admin', res.userInfo.admin);
-                        sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
                         history.push(toPath);
                     }
@@ -103,7 +102,6 @@ const LoginForm = () => {
                         sessionStorage.setItem('userId', res.userInfo.userId);
                         sessionStorage.setItem('userName', res.userInfo.userName);
                         sessionStorage.setItem('admin', res.userInfo.admin);
-                        sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
                         authUtil.setAuth(true)
                         history.push(toPath);
                     }
@@ -229,7 +227,6 @@ const Login = () => {
                     sessionStorage.setItem('userId', res.userInfo.userId);
                     sessionStorage.setItem('userName', res.userInfo.userName);
                     sessionStorage.setItem('admin', res.userInfo.admin);
-                    sessionStorage.setItem('favouritePlace', res.userInfo.favouritePlace.toString());
 
                     authUtil.setAuth(true)
                     history.push(toPath);

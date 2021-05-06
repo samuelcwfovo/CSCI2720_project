@@ -181,11 +181,13 @@ const TableContent = (props) => {
     };
 
     return (
-        <MUIDataTable className="my-2 my-lg-0"
-            data={data}
-            columns={columns}
-            options={options}
-        />
+        <div className="hospitals-map-table">
+            <MUIDataTable className="my-2 my-lg-0"
+                data={data}
+                columns={columns}
+                options={options}
+            />
+        </div>
     )
 }
 
