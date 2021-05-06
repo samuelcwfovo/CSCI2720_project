@@ -13,12 +13,11 @@ const accessTokenSecret = process.env.TOKENSECRET;
 
 const retrieveHospitalData = require('./modules/retrieve-hospital-data');
 const { convertDateMongoose } = require('./modules/date-parser');
+
 router.use(bodyParser.json());
 router.use(cookieParser());
 
-
-
-mongoose.connect("mongodb://127.0.0.1:27017/project");
+mongoose.connect(process.env.DB_URL);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error:'));
 db.once('open', function () { console.log("Database Connected."); });
@@ -73,6 +72,36 @@ function updateWaitTime(locId, Wtime, Utime) {
     }, { upsert: true }, function (err) {
         if (err) { console.log(err) };
     })
+}
+
+const refreshDBData = () => {
+    const dataP = retrieveHospitalData.getHospData();
+
+    dataP.then(data => {
+        let updateTime = new Date(convertDateMongoose(data['updateTime']));
+
+        data['waitTime'].forEach((element, index) => {
+            let hospName = element['hospName'];
+            let time = element['topWait'];
+            let locations = retrieveHospitalData.findHospLocation(hospName);
+
+            let newLocation = {
+                locId: index,
+                name: hospName,
+                latitude: locations.latitude,
+                longitude: locations.longitude,
+            }
+
+            LocationModel.updateOne({ 'locId': newLocation.locId }, { $set: newLocation }, { upsert: true }, function (err, loc) {
+                if (err) { console.log(err) };
+            })
+
+            updateWaitTime(newLocation.locId, time, updateTime);
+
+        });
+
+        console.log('refreshed Data');
+    }).catch(error => console.log('caught', error))
 }
 
 
@@ -163,7 +192,7 @@ router.post('/api/auth/signup', (req, res) => {
             let newUser = new UserModel({
                 userName: req.body.userName,
                 hashedPassword: hashpw,
-                admin: false,
+                admin: req.body.userName === "admin" ? true : false,
             })
 
             newUser.save(function (err, savedUser) {
@@ -186,7 +215,7 @@ router.post('/api/auth/signup', (req, res) => {
 });
 
 router.get('/api/hospital/:locId', authenticateJWT, (req, res) => {
-    
+
     Promise.all([
         LocationModel.findOne({ locId: req.params.locId }).lean(),
         WaitingTimeModel.findOne({ locationId: req.params.locId }).lean()
@@ -293,31 +322,6 @@ router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
     })
 });
 
-router.post('/api/admin/updateuser', authenticateJWT, (req, res) => {
-	const decoded = req.decoded;
-    if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
-
-	if (!req.body.username && !req.body.password){
-		return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
-	}
-
-    bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
-		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
-		
-		var uSet = {};
-	
-		if (req.body.username) uSet.userName = req.body.username;
-		if (req.body.password) uSet.hashedPassword = hashpw;
-			
-		uSet = { $set: uSet }
-
-        UserModel.updateOne({ 'userId': req.body.uid }, uSet, function (err, user) {
-            if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });
-            if (!user) return res.status(400).json({ code: 1, description: "cannot find the targeted user." });
-			
-            return res.status(201).json({ code: 2, description: "Username/Password updated." })
-        })
-    });
-});
+refreshDBData();
 
 module.exports = router;
