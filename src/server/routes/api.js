@@ -250,7 +250,7 @@ router.get('/api/hospital', authenticateJWT, async (req, res) => {
 
 router.get('/api/comment/:locId', authenticateJWT, (req, res) => {
 
-    CommentModel.find({ locationId: req.params.locId }, function (err, comments) {
+    CommentModel.find({ locationId: req.params.locId }).sort({ 'creationDate': -1 }).exec(function (err, comments) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "find comment error" });
 
         return res.status(200).json({ code: 2, comments, description: "find comment succeeded" });
@@ -293,7 +293,7 @@ router.put('/api/favourite', authenticateJWT, (req, res) => {
 router.get('/api/historical/past-10-hour', (req, res) => {
     WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
         let latestUpdateTime = waitTime.date.getTime();
-        
+
         console.log(latestUpdateTime, Date.now())
     })
 })
