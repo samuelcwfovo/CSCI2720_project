@@ -131,7 +131,7 @@ class UserManage extends React.Component{
 					<div>
 						<Dropdown>
 							<Dropdown.Toggle variant="primary">
-								Create New User
+								Update User
 							</Dropdown.Toggle>
 
 							<Dropdown.Menu>
