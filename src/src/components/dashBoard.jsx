@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext } from 'react';
+import React, { useState, useLayoutEffect, useContext, useEffect } from 'react';
 import '../assets/css/dashboard.css';
 
 import {
@@ -14,6 +14,7 @@ import { AuthContext } from '../context/ControlContext.jsx';
 import HospitalsMap from './subpage/hospitalsMap.jsx';
 import HospitalDetail from './subpage/hospitalDetail.jsx';
 import FavouritePlace from './subpage/favouritePlace.jsx';
+import HistoricalData from './subpage/historicalData.jsx';
 import HospitalsManage from './subpage/hospitalsManage.jsx';
 import UserManage from './subpage/userManage.jsx';
 
@@ -34,11 +35,14 @@ const Dashboard = () => {
 
     useLayoutEffect(() => {
         document.body.classList.add('dashboard-body');
-        setCurrentNav();
         return () => {
             document.body.classList.remove('dashboard-body');
         };
     }, []);
+
+    useEffect(() => {
+        setCurrentNav();
+    });
 
     const setCurrentNav = () => {
         let path = history.location.pathname;
@@ -51,6 +55,10 @@ const Dashboard = () => {
             {
                 name: 'favourite',
                 id: 1,
+            },
+            {
+                name: 'historical-data',
+                id: 2,
             },
             {
                 name: 'places-manage',
@@ -96,7 +104,7 @@ const Dashboard = () => {
         {
             name: "Historical",
             adminOnly: false,
-            link: 'favourite',
+            link: 'historical-data',
             icon: DescriptionOutlined
 
         },
@@ -208,6 +216,7 @@ const Dashboard = () => {
                         <Route path="/dashboard/hospitals/:locId" component={HospitalDetail} />
                         <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
                         <Route path={"/dashboard/favourite"} component={FavouritePlace} />
+                        <Route path={"/dashboard/historical-data"} component={HistoricalData} />
                         <Route path={"/dashboard/places-manage"} component={HospitalsManage} />
                         <Route path={"/dashboard/users-manage"} component={UserManage} />
                         <Route exact path="/dashboard">

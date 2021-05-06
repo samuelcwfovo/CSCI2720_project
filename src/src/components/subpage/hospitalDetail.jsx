@@ -183,7 +183,7 @@ const HospitalDetail = () => {
             <div className="col-lg" style={{ flex: 2 }}>
                 <div className="hospital-detail-map">
                     <GoogleMapReact
-                        bootstrapURLKeys={{ key: GoogleMapKey }}
+                        bootstrapURLKeys={{ key: GoogleMapKey, language: 'zh-HK' }}
                         defaultCenter={{
                             lat: location.latitude,
                             lng: location.longitude
@@ -209,7 +209,7 @@ const HospitalDetail = () => {
                     <div className="hospital-detail-info">
                         <div className="d-flex align-items-center justify-content-between hospital-detail-info-header">
                             <h4>Hospital Details</h4>
-                            {favourite.includes(Number(locId)) ? <Favorite onClick={() => removeFavourite()} /> : <FavoriteBorder onClick={() => addFavourite()} />}
+                            {favourite.includes(Number(locId)) ? <Favorite onClick={() => removeFavourite()} style={{ color: "red", cursor: "pointer" }} /> : <FavoriteBorder onClick={() => addFavourite()} style={{ cursor: "pointer" }} />}
                         </div>
                         <div className="hospital-detail-info-table">
                             <table className="">
@@ -235,34 +235,38 @@ const HospitalDetail = () => {
                         </div>
                     </div>
 
-                    <div className="my-3">
-                        <h4>Comments</h4>
+                    <div className="my-3 hospital-detail-comment">
 
-                        <div>
-                            <h5>Your Comment</h5>
+                        <div className="hospital-detail-comment-title">
+                            <h4>Comments</h4>
+                        </div>
+                        <div className="hospital-detail-comment-text">
                             <form id="comment-form">
-                                <textarea className="form-control" id="comment-text" rows="3" required></textarea>
+                                <textarea className="form-control" id="comment-text" rows="3" placeholder="Please input your comment here..." required ></textarea>
 
-                                <button type="button" className="btn btn-outline-info" onClick={CommentSubmit}>Info</button>
+                                <div className="d-flex justify-content-end">
+                                    <button type="button" className="btn btn-success" onClick={CommentSubmit}>post</button>
+                                </div>
                             </form>
                         </div>
 
-
-                        {comments.map((comment, index) => {
-                            return (
-                                <div className="d-flex flex-row my-3" key={index}>
-                                    <EmojiEmotions className="comment-pic mx-3" />
-                                    <div className="comment-body">
-                                        <div className="commentHeader d-flex">
-                                            <div className="commentAuthor mx-2">{comment.author}</div>
-                                            <span className="comment-date mx-2">{new Date(comment.creationDate).toLocaleString('en-US')}</span>
+                        <div className="hospital-detail-comment-area">
+                            {comments.map((comment, index) => {
+                                return (
+                                    <div className="d-flex flex-row my-3 hospital-detail-comment-box" key={index}>
+                                        <EmojiEmotions className="hospital-detail-comment-icon" />
+                                        <div className="hospital-detail-comment-body">
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <div className="mx-2 hospital-detail-comment-author">{comment.author}</div>
+                                                <span className="mx-2 hospital-detail-comment-date">{new Date(comment.creationDate).toLocaleString('en-US')}</span>
+                                            </div>
+                                            <p className="hospital-detail-comment-conent mx-2">{comment.comment}</p>
                                         </div>
-                                        <span className="comment-content mx-2">{comment.comment}</span>
-                                    </div>
 
-                                </div>
-                            )
-                        })}
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>

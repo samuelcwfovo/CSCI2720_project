@@ -1,5 +1,4 @@
-.hospitals-map-content,
-.hospitals-map-table {
+.hospitals-map-content {
     margin-top: 1rem;
     width     : 100%;
     height    : calc(100vh - 7rem);
@@ -9,11 +8,26 @@
 
 }
 
+.hospitals-map-table {
+    margin-top: 1rem !important;
+}
+
+@media (min-width:992px) {
+    .MUIDataTable-responsiveBase-5 {
+        height  : calc(100vh - 15rem) !important;
+        overflow: scroll;
+    }
+}
 
 @media (max-width: 992px) {
     .hospitals-map-content {
         min-width: 100%;
         height   : 50vh !important;
+    }
+
+    .MUIDataTable-responsiveBase-5 {
+        height  : 50vh !important;
+        overflow: scroll;
     }
 }
 

@@ -10,7 +10,7 @@
 .hospital-detail-rest {
     margin-top: 1rem;
     width     : 100%;
-    height    : calc(100vh - 7rem);
+    /* height    : calc(100vh - 7rem); */
 
 }
 
@@ -21,12 +21,15 @@
 
 }
 
-.hospital-detail-info-header {
+.hospital-detail-info-header,
+.hospital-detail-comment-title {
     background-color: #28c19e;
-    padding: 1em 2em;
+    color           : white;
+    padding         : 1em;
 }
 
-.hospital-detail-info-header h4 {
+.hospital-detail-info-header h4,
+.hospital-detail-comment-title h4 {
     margin: 0;
 }
 
@@ -40,11 +43,85 @@
 
 .hospital-detail-info-table {
     background: #fff;
-    padding   : 40px 30px;
-    color: #777777;
+    padding   : 1.5em 1em;
+    color     : #777777;
 }
 
-.comment-pic {
-    width : 45px !important;
-    height: auto !important;
+.hospital-detail-info-table tbody,
+.hospital-detail-info-table table {
+    width: 100%;
+}
+
+
+.hospital-detail-info-table td {
+    text-align: right;
+}
+
+.hospital-detail-info-table td,
+.hospital-detail-info-table th {
+    padding: .5em 0em;
+}
+
+.hospital-detail-comment-area {
+    max-height: calc(100vh - 40rem);
+    overflow  : auto;
+}
+
+.hospital-detail-comment {
+    box-shadow:
+        1em 1em 3em rgba(0, 0, 0, 0.1),
+        0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+#comment-form {
+    padding: 0em 1em;
+}
+
+#comment-form textarea {
+    margin-top: 1em;
+}
+
+#comment-form button {
+    margin-top   : .3em;
+    margin-bottom: 1em;
+    width        : 100%;
+}
+
+
+.hospital-detail-comment-box {
+    margin: 0em 1em;
+}
+
+.hospital-detail-comment-icon {
+    color        : #2D6D4B;
+    width        : 45px !important;
+    height       : 45px !important;
+    margin-top   : 0;
+    margin-right : .1em;
+    margin-left  : .1em;
+    margin-bottom: .5em;
+}
+
+.hospital-detail-comment-body {
+    width        : 100%;
+    border-bottom: 1px solid #bcbcbc;
+}
+
+.hospital-detail-comment-author {
+    font-weight: 600;
+}
+
+.hospital-detail-comment-date {
+    font-size: x-small;
+}
+
+.hospital-detail-comment-conent {
+    color: #777777;
+
+}
+
+.btn-success:hover {
+    color           : #fff;
+    background-color: #157347;
+    border-color    : #146c43;
 }

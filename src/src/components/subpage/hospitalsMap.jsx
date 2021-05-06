@@ -27,6 +27,7 @@ const HospitalsMap = () => {
             .then(data => data.json())
             .then(res => {
                 if (res.code === 2) {
+                    console.log("hospitals", res.hospitals)
                     setLocations(res.hospitals)
                 } else {
                     console.log("fetch hospital data fail", res)
@@ -119,7 +120,7 @@ const MapContent = (props) => {
     return (
         <div className="hospitals-map-content">
             <GoogleMapReact
-                bootstrapURLKeys={{ key: GoogleMapKey }}
+                bootstrapURLKeys={{ key: GoogleMapKey, language: 'zh-HK' }}
                 defaultCenter={{
                     lat: 22.31930137022674,
                     lng: 114.16997366890004
@@ -178,16 +179,17 @@ const TableContent = (props) => {
         filter: true,
         selectableRowsHideCheckboxes: true,
         filterType: 'textField',
+        rowsPerPage: 50,
     };
 
     return (
-        <div className="hospitals-map-table">
-            <MUIDataTable className="my-2 my-lg-0"
-                data={data}
-                columns={columns}
-                options={options}
-            />
-        </div>
+        <MUIDataTable className="my-2 my-lg-0 hospitals-map-table"
+            title={"Hospitals List"}
+            data={data}
+            columns={columns}
+            options={options}
+            tableBodyHeight="100%"
+        />
     )
 }
 

@@ -250,7 +250,7 @@ router.get('/api/hospital', authenticateJWT, async (req, res) => {
 
 router.get('/api/comment/:locId', authenticateJWT, (req, res) => {
 
-    CommentModel.find({ locationId: req.params.locId }, function (err, comments) {
+    CommentModel.find({ locationId: req.params.locId }).sort({ 'creationDate': -1 }).exec(function (err, comments) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "find comment error" });
 
         return res.status(200).json({ code: 2, comments, description: "find comment succeeded" });
@@ -293,16 +293,59 @@ router.put('/api/favourite', authenticateJWT, (req, res) => {
 router.get('/api/historical/past-10-hour', (req, res) => {
     WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
         let latestUpdateTime = waitTime.date.getTime();
-        pastTenHrs = [latestUpdateTime - 2700000];
+        past10Hrs = [latestUpdateTime - 2700000];
 		for (var i = 0; i < 9; i++) {
-			pastTenHrs.unshift(pastTenHrs[0] - 3600000);
+			past10Hrs.unshift(past10Hrs[0] - 3600000);
 		}
 		
 		links = [];
 		for (var i = 0; i < 10; i++){
 			link = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
 			
-			const t = new Date(pastTenHrs[i]);
+			const t = new Date(past10Hrs[i]);
+			let YYYY = t.getFullYear() + "";
+			let MM = t.getMonth() + 1;
+			if (MM < 10)
+				MM = "" + "0" + MM;
+			else
+				MM = MM + "";
+			let DD = t.getDate();
+			if (DD < 10)
+				DD = "" + "0" + DD;
+			else
+				DD = DD + "";
+			let hh = t.getHours();
+			if (hh < 10)
+				hh = "" + "0" + hh;
+			else
+				hh = hh + "";
+			let mm = t.getMinutes();
+			if (mm < 10)
+				mm = "" + "0" + mm;
+			else
+				mm = mm + "";
+			
+			let dateFormat = YYYY + MM + DD + "-" + hh + mm;
+			link += dateFormat;
+			links.push(link);
+		}
+    })
+})
+
+
+router.get('/api/historical/past-7-day', (req, res) => {
+    WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
+        let latestUpdateTime = waitTime.date.getTime();
+        past7Days = [latestUpdateTime - 85500000];
+		for (var i = 0; i < 6; i++) {
+			past7Days.unshift(past7Days[0] - 86400000);
+		}
+		
+		links = [];
+		for (var i = 0; i < 7; i++){
+			link = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
+			
+			const t = new Date(past7Days[i]);
 			let YYYY = t.getFullYear() + "";
 			let MM = t.getMonth() + 1;
 			if (MM < 10)
