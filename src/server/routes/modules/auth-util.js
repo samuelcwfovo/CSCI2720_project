@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 const authenticateJWT = (req, res, next) => {
+    if (!req.cookies) { return res.status(401).json({ code: 1, description: "cookies not found" }) }
+
     const token = req.cookies.token;
 
     if (!token) { return res.status(401).json({ code: 1, description: "token not found" }) }
