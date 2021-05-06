@@ -293,7 +293,7 @@ router.put('/api/favourite', authenticateJWT, (req, res) => {
 router.get('/api/historical/past-10-hour', (req, res) => {
     WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
         let latestUpdateTime = waitTime.date.getTime();
-        pastTenHrs = [latestUpdateTime];
+        pastTenHrs = [latestUpdateTime - 3600000];
 		for (var i = 0; i < 9; i++) {
 			pastTenHrs.unshift(pastTenHrs[0] - 3600000);
 		}
