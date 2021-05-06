@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 
-
 class UserManage extends React.Component{
 	
 	constructor(props) {
@@ -13,8 +12,8 @@ class UserManage extends React.Component{
     }
 	
 	getUser(){
-		fetch('/api/admin/getusers', {
-			method: 'POST',
+		fetch('/api/admin/user', {
+			method: 'GET',
 			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
@@ -36,12 +35,42 @@ class UserManage extends React.Component{
 		this.getUser();
     }
 	
+	createUser = () => {
+		let f = document.getElementById("create");
+		
+		fetch('/api/admin/user', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+            body: JSON.stringify({
+                username: f.elements.username.value,
+                password: f.elements.password.value
+            })
+		})
+        .then(data => data.json())
+        .then(res => {
+			if (res.code === 0) {
+                console.log("internal errors", res)
+            }
+            if (res.code === 1) {
+                console.log("create user failed", res)
+            }
+            if (res.code === 2) {
+                console.log("create user succeeded", res)
+				this.getUser();
+				alert("New User Created");
+            }
+        }).catch((error) => console.error(error));
+    }
+	
 	updateUser = id => () => {
 		let f = document.getElementById("update-" + id);
 		console.log("update-id: " + id);
 		
-		fetch('/api/admin/updateuser', {
-			method: 'POST',
+		fetch('/api/admin/user', {
+			method: 'PUT',
 			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
@@ -67,11 +96,67 @@ class UserManage extends React.Component{
             }
         }).catch((error) => console.error(error));
     }
+	
+	deleteUser = id => () => {
+		fetch('/api/admin/user', {
+			method: 'DELETE',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+            body: JSON.stringify({
+				uid: id,
+            })
+		})
+        .then(data => data.json())
+        .then(res => {
+			if (res.code === 0) {
+                console.log("internal errors", res)
+            }
+            if (res.code === 1) {
+                console.log("delete user failed", res)
+            }
+            if (res.code === 2) {
+                console.log("delete user succeeded", res)
+				this.getUser();
+				alert("User Deleted");
+            }
+        }).catch((error) => console.error(error));
+    }
 
 	render(){
 		return(
 			<div>
 				<h1>Users Manage</h1>
+					<div>
+						<Dropdown>
+							<Dropdown.Toggle variant="primary">
+								Update User
+							</Dropdown.Toggle>
+
+							<Dropdown.Menu>
+								<Dropdown.Header>
+									<form id="create">
+										<div className="py-3 mx-3 width-auto">
+											<label for="new-username">New Username</label>
+											<input type="text" name="username" className="form-control" id="update-username" placeholder="New Username" onInput={(e) => e.target.setCustomValidity('')} />
+										</div>
+													
+										<div className="py-3 mx-3 width-auto">Or</div>
+										
+										<div className="py-3 mx-3 width-auto">
+											<label for="new-password">New Password</label>
+											<input type="password" name="password" className="form-control" id="update-password" placeholder="New Password" />
+										</div>
+										<div className="py-5 mx-3">
+											<button type="button" className="btn btn-primary btn-outline-light" onClick={this.createUser}>Create</button>
+										</div>
+									</form>
+								</Dropdown.Header>
+							</Dropdown.Menu>
+						</Dropdown>
+					</div>
+					<br /><h2>Users Table</h2>
 					<table className="table text-light bg-transparent">
 						<thead><tr><th> User ID </th><th> Username </th><th> Operations </th></tr></thead>
 						<tbody>
@@ -105,6 +190,7 @@ class UserManage extends React.Component{
 											</Dropdown.Header>
 										</Dropdown.Menu>
 									</Dropdown>
+									<button type="button" className="btn btn-danger" onClick={this.deleteUser(this.state.data[key]['userId'])}>Delete User</button>
 								</td></tr>
 								) : <tr><td>Loading</td></tr>}
 						</tbody>

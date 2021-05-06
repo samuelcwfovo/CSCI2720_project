@@ -6,7 +6,11 @@ const API_KEY = 'AIzaSyBNcklVz6OSbXWIS2S0pafMYKr5onunoOs'
 /* Json Schema:
     waitTime:
         { type: Array,
-          items: String}
+          items: {
+              hospName: String,
+              topWait: String
+          }
+        }
     updateTime: String
 */
 function getHospData() {
