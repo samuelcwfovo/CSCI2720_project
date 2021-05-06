@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 let Schema = mongoose.Schema;
 
+mongoose.connect(process.env.DB_URL);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', function () { console.log("Database Connected."); });
 
 var UserSchema = Schema({
     userName: { type: String, unique: true, required: true },
