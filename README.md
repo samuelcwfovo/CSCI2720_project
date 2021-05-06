@@ -27,7 +27,7 @@
 - [x] List all places in a table, and allow sorting of the table with one of the listed fields, linking to single places
 - [x] Show all ~~available~~ places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
 - [x] Search for places which contain keywords in one field chosen by the user which will result in a table of place results
-- [ ] A separate view for one single place, containing:<br>
+- [x] A separate view for one single place, containing:<br>
       a. a map showing the place<br>
       b. the place details<br>
       c. user comments, where users can add new comments (non-threaded)<br>
