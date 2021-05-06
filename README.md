@@ -21,12 +21,12 @@
 #### Generals
 - [ ] Create chart: Waiting time in the past 10 hours
 - [ ] Create chart: Waiting time in this hour of past 7 days
-- [ ] Setup everything on one of our 2720 VM after all codes are completed
+- [x] Setup everything on one of our 2720 VM after all codes are completed
 
 #### User Actions
-- [ ] List all places in a table, and allow sorting of the table with one of the listed fields, linking to single places
-- [ ] Show all ~~available~~ places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
-- [ ] Search for places which contain keywords in one field chosen by the user which will result in a table of place results
+- [x] List all places in a table, and allow sorting of the table with one of the listed fields, linking to single places
+- [x] Show all ~~available~~ places in a map, with links to each single place (Suggested APIs: Google Maps, MapBox)
+- [x] Search for places which contain keywords in one field chosen by the user which will result in a table of place results
 - [ ] A separate view for one single place, containing:<br>
       a. a map showing the place<br>
       b. the place details<br>
@@ -39,10 +39,10 @@
 - [x] Refresh data, i.e. reload from the online dataset, without affecting data which does not come from API (e.g. user comments within your app) **(Done by Ray)**
 
 - [ ] CRUD place data in the local database
-- [ ] CRUD user data (username and password only) in the local database
+- [x] CRUD user data (username and password only) in the local database
 - [x] Log out as admin
 
 #### Non-user actions:
 - [x] Log in as user with username and password **(Done by Samual)**
-- [ ] Log in as admin using username and password both as admin (Shall be implemented to the db in 2720 VM after all codes are completed
+- [x] Log in as admin using username and password both as admin (Shall be implemented to the db in 2720 VM after all codes are completed
 )
