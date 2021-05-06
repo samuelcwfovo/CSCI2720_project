@@ -322,7 +322,7 @@ router.get('/api/admin/user', authenticateJWT, (req, res) => {
     })
 });
 
-router.post('/api/admin/user', authenticateJWT, (req, res) => {
+router.put('/api/admin/user', authenticateJWT, (req, res) => {
 	const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "refresh permission denied." });
 
