@@ -329,7 +329,6 @@ router.get('/api/historical/past-10-hour', (req, res) => {
 			link += dateFormat;
 			links.push(link);
 		}
-		console.log(links)
     })
 })
 
