@@ -378,6 +378,22 @@ router.put('/api/admin/user', authenticateJWT, (req, res) => {
     });
 });
 
+router.delete('/api/admin/user', authenticateJWT, (req, res) => {
+	const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "delete user permission denied." });
+
+	if (!req.body.uid){
+		return res.status(400).json({ code: 1, description: "cannot get uid from request" });
+	}
+
+    UserModel.deleteOne({ 'userId': req.body.uid }, function (err, user) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });
+        if (!user) return res.status(400).json({ code: 1, description: "cannot find the targeted user." });
+
+        return res.status(201).json({ code: 2, description: "user deleted." })
+    })
+});
+
 refreshDBData();
 
 module.exports = router;
