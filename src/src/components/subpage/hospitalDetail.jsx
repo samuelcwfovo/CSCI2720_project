@@ -11,8 +11,12 @@ import { Bar } from 'react-chartjs-2';
 const HistoricalDataHour = (props) => {
 
     let datalabel = []
+    let dataSet = props.dataSets;
 
-    props.dataSets.forEach(data => {
+    dataSet.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+
+    dataSet.forEach(data => {
         let d = new Date(data.date);
         datalabel.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
     })
@@ -20,7 +24,7 @@ const HistoricalDataHour = (props) => {
 
     let displayDate = []
 
-    props.dataSets.forEach(data => {
+    dataSet.forEach(data => {
         let d = Number(data.waitingTime.match(/\d+/));
         displayDate.push(d)
     })
@@ -98,7 +102,7 @@ const HistoricalDataDay = (props) => {
 
     let datalabel = []
 
-    dataSet.sort((b, a) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    dataSet.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 
     dataSet.forEach(data => {
