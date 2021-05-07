@@ -14,7 +14,6 @@ import { AuthContext } from '../context/ControlContext.jsx';
 import HospitalsMap from './subpage/hospitalsMap.jsx';
 import HospitalDetail from './subpage/hospitalDetail.jsx';
 import FavouritePlace from './subpage/favouritePlace.jsx';
-import HistoricalData from './subpage/historicalData.jsx';
 import HospitalsManage from './subpage/hospitalsManage.jsx';
 import UserManage from './subpage/userManage.jsx';
 
@@ -57,16 +56,12 @@ const Dashboard = () => {
                 id: 1,
             },
             {
-                name: 'historical-data',
+                name: 'places-manage',
                 id: 2,
             },
             {
-                name: 'places-manage',
-                id: 3,
-            },
-            {
                 name: 'users-manage',
-                id: 4,
+                id: 3,
             },
         ]
 
@@ -100,13 +95,6 @@ const Dashboard = () => {
             adminOnly: false,
             link: 'favourite',
             icon: FavoriteTwoTone
-        },
-        {
-            name: "Historical",
-            adminOnly: false,
-            link: 'historical-data',
-            icon: DescriptionOutlined
-
         },
         {
             name: "Place Data",
@@ -216,7 +204,6 @@ const Dashboard = () => {
                         <Route path="/dashboard/hospitals/:locId" component={HospitalDetail} />
                         <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
                         <Route path={"/dashboard/favourite"} component={FavouritePlace} />
-                        <Route path={"/dashboard/historical-data"} component={HistoricalData} />
                         <Route path={"/dashboard/places-manage"} component={HospitalsManage} />
                         <Route path={"/dashboard/users-manage"} component={UserManage} />
                         <Route exact path="/dashboard">

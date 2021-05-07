@@ -211,6 +211,8 @@ const HospitalDetail = () => {
                 if (res.code === 2) {
                     console.log(res)
                     setSevenDay(res.finalData)
+                    setTick(tick => tick + 1);
+
                 } else {
                     console.log("fetch comment fail", res)
                 }
@@ -230,6 +232,8 @@ const HospitalDetail = () => {
                 if (res.code === 2) {
                     console.log(res)
                     setTenHour(res.finalData)
+                    setTick(tick => tick + 1);
+
                 } else {
                     console.log("fetch comment fail", res)
                 }
