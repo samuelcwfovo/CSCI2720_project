@@ -444,7 +444,7 @@ const HospitalDetail = () => {
                                         <td>{location.longitude}</td>
                                     </tr>
                                     <tr>
-                                        <th>Wait Time:</th>
+                                        <th>Waiting Time:</th>
                                         <td>{location.waitTime.waitingTime}</td>
                                     </tr>
                                 </tbody>
