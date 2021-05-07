@@ -20,6 +20,8 @@
         1em 1em 3em rgba(0, 0, 0, 0.1),
         0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
 
+    overflow-y: scroll;
+
 
 }
 
