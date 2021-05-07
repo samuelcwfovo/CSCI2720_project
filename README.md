@@ -32,7 +32,7 @@
       b. the place details<br>
       c. user comments, where users can add new comments (non-threaded)<br>
       
-- [ ] Add place into a list of user’s favourite places, and see the list in another view (flexible implementation)
+- [x] Add place into a list of user’s favourite places, and see the list in another view (flexible implementation)
 - [x] See the username in the top left/right of screen, and be able to log out **(Done by Samual)**
 
 #### Admin Actions
