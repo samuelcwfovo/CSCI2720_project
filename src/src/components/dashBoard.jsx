@@ -231,6 +231,105 @@ const Dashboard = () => {
     )
 }
 
+const {isEmpty, retrieveQuery} = require('./modules/json-util')
+const validCol = ['locId', 'name', 'latitude', 'longitude'];
 
+// Return all documents satisfying request conditions
+router.get('/api/admin/hospital', authenticateJWT, async function (req, res) {
+	let locations = await LocationModel.find().lean();
+
+		locations = await Promise.all(
+			locations.map(async (location) => {
+				try {
+					const waitTime = await WaitingTimeModel.findOne({ 'locationId': location.locId })
+						.sort({ 'date': -1 }).lean();
+					return { ...location, waitTime };
+				} catch (err) {
+					return res.status(500).json({ code: 0, error: err, description: "find waitTime error" });
+				}
+			})
+		);
+		
+		return res.status(200).json({ code : 2, description : "Success", hospitals: locations });
+});
+
+// Create ONE document with request body
+router.post('/api/admin/hospital', authenticateJWT, function (req, res) {
+    const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "create hospital permission denied." });
+	
+	let newLocation = new LocationModel({
+				locId: req.body.locId,
+                name: req.body.name,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude
+            })
+
+    newLocation.save(function (err, savedloc) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "save location error" });
+		let newWaitingTime = new WaitingTimeModel({
+				date: req.body.locId,
+                locationId: req.body.locId,
+                waitingTime: req.body.wt,
+            })
+		newWaitingTime.save(function (err, savedwt) {
+			if (err) return res.status(500).json({ code: 0, error: err, description: "save waiting time error" });
+			return res.status(201).json({ code: 2, description: "created." })
+		})
+    })
+});
+
+// Remove first record satisfing conditions in req.body
+// Add {removeAll: true} in req.body for removing all records satisfing conditions
+router.delete('/api/admin/hospital', authenticateJWT, function (req, res) {
+    const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "delete hospital permission denied." });
+	
+	console.log(req.body.locId);
+	
+    LocationModel.deleteOne({ 'locId': req.body.locId }, function (err, deleted) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "DB remove error" });
+            else return res.status(200).json({ code : 2, description : "Success", removedCount: deleted.deletedCount });
+        })
+})
+
+// Update the first document satisfing condition in req.body
+/* Request body schema:
+    {
+        condition: {
+            locId: Number,
+            name: String,
+            latitude: Number,
+            longitude: Number,
+        }
+        new: {
+            locId: { value: Number, update: Boolean },
+            name: { value: String, update: Boolean },
+            latitude: { value: Number, update: Boolean },
+            longitude: { value: Number, update: Boolean },
+        }
+    }
+*/
+// At least one attribute in condition is required
+// Column with attribute 'update' == true will be updated
+router.put('/api/admin/hospital', authenticateJWT, function (req, res) {
+    const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "update hospital permission denied." });
+
+    let updateQuery = {}
+    for (col in req.body.new) {
+        if (validCol.includes(col) && req.body.new[col].update) {
+            updateQuery[col] = req.body.new[col].value;
+        }
+    }
+
+    let condition = retrieveQuery(req.body.condition, validCol);
+    if (isEmpty(condition)) return res.status(400).json({ code: 1, description: "No valid condition is given." });
+
+    LocationModel.findOneAndUpdate( retrieveQuery(req.body.condition, validCol), updateQuery, function (err, doc) {
+        if (err) return res.status(500).json({ code: 0, error: err, description: "DB update error" });
+        else return res.status(200).json({ code : 2, description : "Success", origDoc: doc });
+    })
+})
 
 export default Dashboard;
