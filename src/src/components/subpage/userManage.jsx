@@ -56,6 +56,7 @@ class UserManage extends React.Component {
                 }
                 if (res.code === 1) {
                     console.log("create user failed", res)
+		    alert("Please enter valid Username and Password to create user");
                 }
                 if (res.code === 2) {
                     console.log("create user succeeded", res)
