@@ -409,10 +409,36 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
     }).catch(error => console.log('caught', error))
 });
 
-router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
+router.post('/api/admin/user', authenticateJWT, (req, res) => {
+	const decoded = req.decoded;
+    if (!decoded.admin) return res.status(400).json({ code: 1, description: "create user permission denied." });
 
-    if (!req.decoded.admin) { return res.status(401).json({ code: 1, error: err, description: "not auth." }) };
+	if (!req.body.username || !req.body.password){
+		return res.status(400).json({ code: 1, description: "Please enter Username/Password to create new user" });
+	}
 
+    bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
+		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+
+		UserModel.findOne({ 'userName': req.body.username }, function (err, user) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "find exist user error" });
+            if (user) return res.status(400).json({ code: 1, description: "user name already used." });
+
+            let newUser = new UserModel({
+                userName: req.body.username,
+                hashedPassword: hashpw,
+                admin: false,
+            })
+
+            newUser.save(function (err, savedUser) {
+                if (err) return res.status(500).json({ code: 0, error: err, description: "save user error" });
+                return res.status(201).json({ code: 2, description: "created." })
+            })
+        })
+    });
+});
+
+router.get('/api/admin/user', authenticateJWT, (req, res) => {
     UserModel.find({},
         {
             userId: 1,
@@ -426,22 +452,22 @@ router.post('/api/admin/getusers', authenticateJWT, (req, res) => {
 });
 
 router.put('/api/admin/user', authenticateJWT, (req, res) => {
-    const decoded = req.decoded;
+	const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "update user permission denied." });
 
-    if (!req.body.username && !req.body.password) {
-        return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
-    }
+	if (!req.body.username && !req.body.password){
+		return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
+	}
 
     bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
-        if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
 
-        var uSet = {};
+		var uSet = {};
 
-        if (req.body.username) uSet.userName = req.body.username;
-        if (req.body.password) uSet.hashedPassword = hashpw;
+		if (req.body.username) uSet.userName = req.body.username;
+		if (req.body.password) uSet.hashedPassword = hashpw;
 
-        uSet = { $set: uSet }
+		uSet = { $set: uSet }
 
         UserModel.updateOne({ 'userId': req.body.uid }, uSet, function (err, user) {
             if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });
@@ -453,12 +479,12 @@ router.put('/api/admin/user', authenticateJWT, (req, res) => {
 });
 
 router.delete('/api/admin/user', authenticateJWT, (req, res) => {
-    const decoded = req.decoded;
+	const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "delete user permission denied." });
 
-    if (!req.body.uid) {
-        return res.status(400).json({ code: 1, description: "cannot get uid from request" });
-    }
+	if (!req.body.uid){
+		return res.status(400).json({ code: 1, description: "cannot get uid from request" });
+	}
 
     UserModel.deleteOne({ 'userId': req.body.uid }, function (err, user) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });

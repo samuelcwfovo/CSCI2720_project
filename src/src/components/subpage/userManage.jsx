@@ -131,7 +131,7 @@ class UserManage extends React.Component{
 					<div>
 						<Dropdown>
 							<Dropdown.Toggle variant="primary">
-								Update User
+								Create New User
 							</Dropdown.Toggle>
 
 							<Dropdown.Menu>
@@ -157,7 +157,7 @@ class UserManage extends React.Component{
 						</Dropdown>
 					</div>
 					<br /><h2>Users Table</h2>
-					<table className="table text-light bg-transparent">
+					<table className="table text-dark bg-transparent">
 						<thead><tr><th> User ID </th><th> Username </th><th> Operations </th></tr></thead>
 						<tbody>
 							{this.state.data ? Object.keys(this.state.data).map(key => 
@@ -166,7 +166,7 @@ class UserManage extends React.Component{
 								<td>
 									<Dropdown>
 										<Dropdown.Toggle variant="success">
-											Change Username/Password
+											Update User
 										</Dropdown.Toggle>
 
 										<Dropdown.Menu>
