@@ -371,6 +371,7 @@ router.get('/api/historical/past-10-hour/:locId', async (req, res) => {
     );
 
     results.forEach(result => {
+
         let apiTime = new Date(convertDateMongoose(result['updateTime']));
         result['waitTime'].forEach((element, index) => {
             let time = element['topWait'];
@@ -397,9 +398,10 @@ router.get('/api/historical/past-7-day/:locId', async (req, res) => {
     let apiUpdateTime2 = apiUpdateTime;
 
 
-    let past7Days = [apiUpdateTime - 85500000];
+    console.log("apiUpdateTime",apiUpdateTime)
+    let past7Days = [new Date(apiUpdateTime - 85500000)];
     for (var i = 0; i < 6; i++) {
-        past7Days.unshift(past7Days[0] - 86400000);
+        past7Days.unshift(new Date(past7Days[0] - 86400000));
     }
 
     let DBpast7Days = [new Date(apiUpdateTime2 - 86400000)];
@@ -423,7 +425,7 @@ router.get('/api/historical/past-7-day/:locId', async (req, res) => {
     })
 
     let links = [];
-    DBpast7Days.forEach(time => {
+    past7Days.forEach(time => {
         if (!dbTimes.includes(time - 900000)) {
             const t = new Date(time);
 
@@ -491,48 +493,6 @@ router.get('/api/historical/past-7-day/:locId', async (req, res) => {
 })
 
 
-
-router.get('/api/historical/past-7-day', (req, res) => {
-    WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
-        let latestUpdateTime = waitTime.date.getTime();
-        past7Days = [latestUpdateTime - 85500000];
-        for (var i = 0; i < 6; i++) {
-            past7Days.unshift(past7Days[0] - 86400000);
-        }
-
-        links = [];
-        for (var i = 0; i < 7; i++) {
-            link = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
-
-            const t = new Date(past7Days[i]);
-            let YYYY = t.getFullYear() + "";
-            let MM = t.getMonth() + 1;
-            if (MM < 10)
-                MM = "" + "0" + MM;
-            else
-                MM = MM + "";
-            let DD = t.getDate();
-            if (DD < 10)
-                DD = "" + "0" + DD;
-            else
-                DD = DD + "";
-            let hh = t.getHours();
-            if (hh < 10)
-                hh = "" + "0" + hh;
-            else
-                hh = hh + "";
-            let mm = t.getMinutes();
-            if (mm < 10)
-                mm = "" + "0" + mm;
-            else
-                mm = mm + "";
-
-            let dateFormat = YYYY + MM + DD + "-" + hh + mm;
-            link += dateFormat;
-            links.push(link);
-        }
-    })
-})
 
 
 router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
@@ -653,51 +613,51 @@ router.delete('/api/admin/user', authenticateJWT, (req, res) => {
     })
 });
 
-const {isEmpty, retrieveQuery} = require('./modules/json-util')
+const { isEmpty, retrieveQuery } = require('./modules/json-util')
 const validCol = ['locId', 'name', 'latitude', 'longitude'];
 
 // Return all documents satisfying request conditions
 router.get('/api/admin/hospital', authenticateJWT, async function (req, res) {
-	let locations = await LocationModel.find().lean();
+    let locations = await LocationModel.find().lean();
 
-		locations = await Promise.all(
-			locations.map(async (location) => {
-				try {
-					const waitTime = await WaitingTimeModel.findOne({ 'locationId': location.locId })
-						.sort({ 'date': -1 }).lean();
-					return { ...location, waitTime };
-				} catch (err) {
-					return res.status(500).json({ code: 0, error: err, description: "find waitTime error" });
-				}
-			})
-		);
-		
-		return res.status(200).json({ code : 2, description : "Success", hospitals: locations });
+    locations = await Promise.all(
+        locations.map(async (location) => {
+            try {
+                const waitTime = await WaitingTimeModel.findOne({ 'locationId': location.locId })
+                    .sort({ 'date': -1 }).lean();
+                return { ...location, waitTime };
+            } catch (err) {
+                return res.status(500).json({ code: 0, error: err, description: "find waitTime error" });
+            }
+        })
+    );
+
+    return res.status(200).json({ code: 2, description: "Success", hospitals: locations });
 });
 
 // Create ONE document with request body
 router.post('/api/admin/hospital', authenticateJWT, function (req, res) {
     const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "create hospital permission denied." });
-	
-	let newLocation = new LocationModel({
-				locId: req.body.locId,
-                name: req.body.name,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude
-            })
+
+    let newLocation = new LocationModel({
+        locId: req.body.locId,
+        name: req.body.name,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude
+    })
 
     newLocation.save(function (err, savedloc) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "save location error" });
-		let newWaitingTime = new WaitingTimeModel({
-				date: req.body.locId,
-                locationId: req.body.locId,
-                waitingTime: req.body.wt,
-            })
-		newWaitingTime.save(function (err, savedwt) {
-			if (err) return res.status(500).json({ code: 0, error: err, description: "save waiting time error" });
-			return res.status(201).json({ code: 2, description: "created." })
-		})
+        let newWaitingTime = new WaitingTimeModel({
+            date: req.body.locId,
+            locationId: req.body.locId,
+            waitingTime: req.body.wt,
+        })
+        newWaitingTime.save(function (err, savedwt) {
+            if (err) return res.status(500).json({ code: 0, error: err, description: "save waiting time error" });
+            return res.status(201).json({ code: 2, description: "created." })
+        })
     })
 });
 
@@ -706,13 +666,13 @@ router.post('/api/admin/hospital', authenticateJWT, function (req, res) {
 router.delete('/api/admin/hospital', authenticateJWT, function (req, res) {
     const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "delete hospital permission denied." });
-	
-	console.log(req.body.locId);
-	
+
+    console.log(req.body.locId);
+
     LocationModel.deleteOne({ 'locId': req.body.locId }, function (err, deleted) {
-            if (err) return res.status(500).json({ code: 0, error: err, description: "DB remove error" });
-            else return res.status(200).json({ code : 2, description : "Success", removedCount: deleted.deletedCount });
-        })
+        if (err) return res.status(500).json({ code: 0, error: err, description: "DB remove error" });
+        else return res.status(200).json({ code: 2, description: "Success", removedCount: deleted.deletedCount });
+    })
 })
 
 // Update the first document satisfing condition in req.body
@@ -748,9 +708,9 @@ router.put('/api/admin/hospital', authenticateJWT, function (req, res) {
     let condition = retrieveQuery(req.body.condition, validCol);
     if (isEmpty(condition)) return res.status(400).json({ code: 1, description: "No valid condition is given." });
 
-    LocationModel.findOneAndUpdate( retrieveQuery(req.body.condition, validCol), updateQuery, function (err, doc) {
+    LocationModel.findOneAndUpdate(retrieveQuery(req.body.condition, validCol), updateQuery, function (err, doc) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "DB update error" });
-        else return res.status(200).json({ code : 2, description : "Success", origDoc: doc });
+        else return res.status(200).json({ code: 2, description: "Success", origDoc: doc });
     })
 })
 

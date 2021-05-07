@@ -94,9 +94,14 @@ const HistoricalDataHour = (props) => {
 
 const HistoricalDataDay = (props) => {
 
+    let dataSet = props.dataSets;
+
     let datalabel = []
 
-    props.dataSets.forEach(data => {
+    dataSet.sort((b, a) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+
+    dataSet.forEach(data => {
         let d = new Date(data.date);
         console.log(d);
         datalabel.push(d.toLocaleString([], { month: '2-digit', day: '2-digit' }));
@@ -105,7 +110,7 @@ const HistoricalDataDay = (props) => {
 
     let displayDate = []
 
-    props.dataSets.forEach(data => {
+    dataSet.forEach(data => {
         let d = Number(data.waitingTime.match(/\d+/));
         displayDate.push(d)
     })

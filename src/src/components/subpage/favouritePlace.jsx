@@ -63,9 +63,9 @@ const FavouritePlace = () => {
 
     const renderTimeCell = (params) => {
         return (
-            <p className="favourite-cell">
+            <span className="favourite-cell">
                 {params.value}
-            </p>
+            </span>
         )
     }
 

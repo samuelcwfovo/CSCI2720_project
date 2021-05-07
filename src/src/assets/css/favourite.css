@@ -9,5 +9,6 @@
 }
 
 .favourite-cell {
-    overflow: scroll;
+    overflow   : scroll;
+    padding-top: 1rem;
 }
