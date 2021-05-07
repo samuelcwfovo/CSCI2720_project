@@ -105,6 +105,7 @@ const MapContent = (props) => {
                     });
                 };
 
+                console.log("123 ", element.waitTime)
                 let div = document.createElement('div');
                 div.className = "marker-content";
                 div.innerHTML = '<p>' + element.name + '</p>' + '<p>' + element.waitTime.waitingTime + '</p>';
@@ -168,7 +169,7 @@ const TableContent = (props) => {
 
     let data = []
     props.locations.forEach(element => {
-        data.push({ "Hospitals": element.name, "Wait Time": element.waitTime.waitingTime, 'locId': element.locId })
+        data.push({ "Hospitals": element.name, "Wait Time": element.waitTime ? element.waitTime.waitingTime : "", 'locId': element.locId })
     });
 
     const options = {

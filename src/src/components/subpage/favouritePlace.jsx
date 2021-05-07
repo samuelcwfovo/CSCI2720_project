@@ -89,7 +89,7 @@ const FavouritePlace = () => {
         let data = locations.filter(location => favourite.includes(location.locId));
 
         data.forEach(element => {
-            element.time = element.waitTime.waitingTime;
+            element.time = element.waitTime ? element.waitTime.waitingTime : "";
             element.id = element.locId;
         })
 

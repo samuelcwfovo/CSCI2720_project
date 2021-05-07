@@ -8,10 +8,37 @@ import { Favorite, FavoriteBorder, EmojiEmotions } from '@material-ui/icons';
 import { Bar } from 'react-chartjs-2';
 
 
-const HistoricalDataHour = (props) => {
+const HistoricalDataHour = () => {
+    let { locId } = useParams();
+
+    const [tenHour, setTenHour] = useState([]);
+
+
+    useEffect(() => {
+        FetchTenHour();
+    }, []);
+
+    const FetchTenHour = () => {
+        fetch('/api/historical/past-10-hour/' + locId, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    setTenHour(res.finalData)
+
+                } else {
+                    console.log("fetch comment fail", res)
+                }
+            })
+    }
 
     let datalabel = []
-    let dataSet = props.dataSets;
+    let dataSet = tenHour;
 
     dataSet.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -92,7 +119,7 @@ const HistoricalDataHour = (props) => {
         </div>
     );
 
-    return VerticalBar();
+    return tenHour.length > 0 ? VerticalBar() : null;
 
 }
 
@@ -107,7 +134,6 @@ const HistoricalDataDay = (props) => {
 
     dataSet.forEach(data => {
         let d = new Date(data.date);
-        console.log(d);
         datalabel.push(d.toLocaleString([], { month: '2-digit', day: '2-digit' }));
     })
 
@@ -194,7 +220,6 @@ const HospitalDetail = () => {
     const [comments, setComments] = useState([]);
     const [location, setLocation] = useState(null);
     const [favourite, setFavourite] = useState([]);
-    const [tenHour, setTenHour] = useState(null);
     const [sevenDay, setSevenDay] = useState(null);
 
     const [, setTick] = useState(0);
@@ -203,7 +228,6 @@ const HospitalDetail = () => {
         FetchLocation();
         FetchComment();
         FetchFavourite();
-        FetchTenHour();
         FetchSevenDay();
     }, []);
 
@@ -228,26 +252,6 @@ const HospitalDetail = () => {
             })
     }
 
-    const FetchTenHour = () => {
-        fetch('/api/historical/past-10-hour/' + locId, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(data => data.json())
-            .then(res => {
-                if (res.code === 2) {
-                    console.log(res)
-                    setTenHour(res.finalData)
-                    setTick(tick => tick + 1);
-
-                } else {
-                    console.log("fetch comment fail", res)
-                }
-            })
-    }
 
     const FetchLocation = () => {
         fetch('/api/hospital/' + locId, {
@@ -461,7 +465,7 @@ const HospitalDetail = () => {
                         </div>
 
                         <div className="hospital-detail-info-chartswrapper d-flex flex-column justify-content-between align-items-center">
-                            {tenHour ? <HistoricalDataHour dataSets={tenHour} /> : null}
+                            <HistoricalDataHour />
                             {sevenDay ? <HistoricalDataDay dataSets={sevenDay} /> : null}
                         </div>
                     </div>
