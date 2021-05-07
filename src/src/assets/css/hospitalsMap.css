@@ -38,7 +38,11 @@
 }
 
 .marker-content-detail {
-    color          : blue;
+    color          : #1f977b;
     text-decoration: underline;
     cursor         : pointer;
+}
+
+a {
+    color: #1f977b;
 }
