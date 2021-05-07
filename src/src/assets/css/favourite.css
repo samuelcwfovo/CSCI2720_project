@@ -10,4 +10,5 @@
 
 .favourite-cell {
     overflow: scroll;
+	margin-bottom: 0;
 }
