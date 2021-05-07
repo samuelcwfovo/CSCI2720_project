@@ -53,26 +53,35 @@ const FavouritePlace = () => {
             })
     }
 
-    const renderCellExpand = (params) => {
-        console.log(params)
+    const renderHospitalCell = (params) => {
         return (
-            <Link to={"/dashboard/hospitals/" + params.id}>
+            <Link to={"/dashboard/hospitals/" + params.id} className="favourite-cell">
                 {params.value}
             </Link>
         )
     }
+
+    const renderTimeCell = (params) => {
+        return (
+            <p className="favourite-cell">
+                {params.value}
+            </p>
+        )
+    }
+
 
     const columns = [
         {
             field: "name",
             headerName: "Hospital Name",
             flex: 1.5,
-            renderCell: renderCellExpand,
+            renderCell: renderHospitalCell,
         },
         {
             field: "time",
             headerName: "Waiting Time",
             flex: 1,
+            renderCell: renderTimeCell,
         },
     ]
 

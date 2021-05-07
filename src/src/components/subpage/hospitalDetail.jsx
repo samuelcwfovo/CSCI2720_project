@@ -5,6 +5,177 @@ import { useParams } from "react-router-dom";
 import { GoogleMapKey } from '../../assets/key.jsx';
 import '../../assets/css/hospitalDetail.css';
 import { Favorite, FavoriteBorder, EmojiEmotions } from '@material-ui/icons';
+import { Bar } from 'react-chartjs-2';
+
+
+const HistoricalDataHour = (props) => {
+
+    let datalabel = []
+
+    props.dataSets.forEach(data => {
+        let d = new Date(data.date);
+        datalabel.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+    })
+
+
+    let displayDate = []
+
+    props.dataSets.forEach(data => {
+        let d = Number(data.waitingTime.match(/\d+/));
+        displayDate.push(d)
+    })
+
+
+
+
+    const data = {
+        labels: datalabel,
+        datasets: [
+            {
+                label: 'waiting hour',
+                data: displayDate,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const options = {
+        scales: {
+            yAxes: [
+                {
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                },
+            ],
+        },
+        maintainAspectRatio: true,
+    };
+
+    const VerticalBar = () => (
+        <div className="hospital-detail-info-chart">
+            <div className='hospital-detail-info-chart-titleWrapper'>
+                <h6 className='hospital-detail-info-chart-title'>Waiting Time (past 10 hours)</h6>
+            </div>
+            <Bar
+                data={data}
+                options={options}
+            />
+        </div>
+    );
+
+    return VerticalBar();
+
+}
+
+const HistoricalDataDay = (props) => {
+
+    let datalabel = []
+
+    props.dataSets.forEach(data => {
+        let d = new Date(data.date);
+        console.log(d);
+        datalabel.push(d.toLocaleString([], { month: '2-digit', day: '2-digit' }));
+    })
+
+
+    let displayDate = []
+
+    props.dataSets.forEach(data => {
+        let d = Number(data.waitingTime.match(/\d+/));
+        displayDate.push(d)
+    })
+
+
+
+
+    const data = {
+        labels: datalabel,
+        datasets: [
+            {
+                label: 'waiting hour',
+                data: displayDate,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 99, 132, 1)',
+
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const options = {
+        scales: {
+            yAxes: [
+                {
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                },
+            ],
+        },
+        maintainAspectRatio: true,
+    };
+
+    const VerticalBar = () => (
+        <div className="hospital-detail-info-chart">
+            <div className='hospital-detail-info-chart-titleWrapper'>
+                <h6 className='hospital-detail-info-chart-title'>Waiting Time (past 7 days)</h6>
+            </div>
+            <Bar
+                data={data}
+                options={options}
+            />
+        </div>
+    );
+
+    return VerticalBar();
+
+}
 
 
 const HospitalDetail = () => {
@@ -14,6 +185,8 @@ const HospitalDetail = () => {
     const [comments, setComments] = useState([]);
     const [location, setLocation] = useState(null);
     const [favourite, setFavourite] = useState([]);
+    const [tenHour, setTenHour] = useState(null);
+    const [sevenDay, setSevenDay] = useState(null);
 
     const [, setTick] = useState(0);
 
@@ -21,7 +194,47 @@ const HospitalDetail = () => {
         FetchLocation();
         FetchComment();
         FetchFavourite();
+        FetchTenHour();
+        FetchSevenDay();
     }, []);
+
+    const FetchSevenDay = () => {
+        fetch('/api/historical/past-7-day/' + locId, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    console.log(res)
+                    setSevenDay(res.finalData)
+                } else {
+                    console.log("fetch comment fail", res)
+                }
+            })
+    }
+
+    const FetchTenHour = () => {
+        fetch('/api/historical/past-10-hour/' + locId, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
+            .then(res => {
+                if (res.code === 2) {
+                    console.log(res)
+                    setTenHour(res.finalData)
+                } else {
+                    console.log("fetch comment fail", res)
+                }
+            })
+    }
 
     const FetchLocation = () => {
         fetch('/api/hospital/' + locId, {
@@ -233,40 +446,47 @@ const HospitalDetail = () => {
                                 </tbody>
                             </table>
                         </div>
+
+                        <div className="hospital-detail-info-chartswrapper d-flex flex-column justify-content-between align-items-center">
+                            {tenHour ? <HistoricalDataHour dataSets={tenHour} /> : null}
+                            {sevenDay ? <HistoricalDataDay dataSets={sevenDay} /> : null}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div className="my-5 hospital-detail-comment">
+
+                    <div className="hospital-detail-comment-title">
+                        <h4>Comments</h4>
+                    </div>
+                    <div className="hospital-detail-comment-text">
+                        <form id="comment-form">
+                            <textarea className="form-control" id="comment-text" rows="2" placeholder="Please input your comment here..." required ></textarea>
+
+                            <div className="d-flex justify-content-end">
+                                <button type="button" className="btn btn-success" onClick={CommentSubmit}>post</button>
+                            </div>
+                        </form>
                     </div>
 
-                    <div className="my-3 hospital-detail-comment">
-
-                        <div className="hospital-detail-comment-title">
-                            <h4>Comments</h4>
-                        </div>
-                        <div className="hospital-detail-comment-text">
-                            <form id="comment-form">
-                                <textarea className="form-control" id="comment-text" rows="3" placeholder="Please input your comment here..." required ></textarea>
-
-                                <div className="d-flex justify-content-end">
-                                    <button type="button" className="btn btn-success" onClick={CommentSubmit}>post</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div className="hospital-detail-comment-area">
-                            {comments.map((comment, index) => {
-                                return (
-                                    <div className="d-flex flex-row my-3 hospital-detail-comment-box" key={index}>
-                                        <EmojiEmotions className="hospital-detail-comment-icon" />
-                                        <div className="hospital-detail-comment-body">
-                                            <div className="d-flex justify-content-between align-items-center">
-                                                <div className="mx-2 hospital-detail-comment-author">{comment.author}</div>
-                                                <span className="mx-2 hospital-detail-comment-date">{new Date(comment.creationDate).toLocaleString('en-US')}</span>
-                                            </div>
-                                            <p className="hospital-detail-comment-conent mx-2">{comment.comment}</p>
+                    <div className="hospital-detail-comment-area">
+                        {comments.map((comment, index) => {
+                            return (
+                                <div className="d-flex flex-row my-3 hospital-detail-comment-box" key={index}>
+                                    <EmojiEmotions className="hospital-detail-comment-icon" />
+                                    <div className="hospital-detail-comment-body">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <div className="mx-2 hospital-detail-comment-author">{comment.author}</div>
+                                            <span className="mx-2 hospital-detail-comment-date">{new Date(comment.creationDate).toLocaleString('en-US')}</span>
                                         </div>
-
+                                        <p className="hospital-detail-comment-conent mx-2">{comment.comment}</p>
                                     </div>
-                                )
-                            })}
-                        </div>
+
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

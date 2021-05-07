@@ -107,7 +107,7 @@ const MapContent = (props) => {
 
                 let div = document.createElement('div');
                 div.className = "marker-content";
-                div.innerHTML = '<p>' + element.name + '</p>';
+                div.innerHTML = '<p>' + element.name + '</p>' + '<p>' + element.waitTime.waitingTime + '</p>';
                 div.appendChild(detail);
 
                 infoWindow.setContent(div);

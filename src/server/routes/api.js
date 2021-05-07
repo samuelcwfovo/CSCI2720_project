@@ -7,9 +7,12 @@ const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const fetch = require('node-fetch');
 
 const saltRounds = 10;
 const accessTokenSecret = process.env.TOKENSECRET;
+const HISTORY_API_LINK = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
+
 
 const retrieveHospitalData = require('./modules/retrieve-hospital-data');
 const { convertDateMongoose } = require('./modules/date-parser');
@@ -289,20 +292,42 @@ router.put('/api/favourite', authenticateJWT, (req, res) => {
 
 })
 
+router.get('/api/historical/past-10-hour/:locId', async (req, res) => {
+    let HosData = await retrieveHospitalData.getHospData();
+    let apiUpdateTime = new Date(convertDateMongoose(HosData['updateTime']));
+    let apiUpdateTime2 = apiUpdateTime;
 
-router.get('/api/historical/past-10-hour', (req, res) => {
-    WaitingTimeModel.findOne({}).sort({ 'date': -1 }).exec(function (err, waitTime) {
-        let latestUpdateTime = waitTime.date.getTime();
-        past10Hrs = [latestUpdateTime - 2700000];
-        for (var i = 0; i < 9; i++) {
-            past10Hrs.unshift(past10Hrs[0] - 3600000);
-        }
 
-        links = [];
-        for (var i = 0; i < 10; i++) {
-            link = "https://api.data.gov.hk/v1/historical-archive/get-file?url=http%3A%2F%2Fwww.ha.org.hk%2Fopendata%2Faed%2Faedwtdata-en.json&time=";
+    let past10Hrs = [apiUpdateTime - 2700000];
+    for (var i = 0; i < 9; i++) {
+        past10Hrs.unshift(past10Hrs[0] - 3600000);
+    }
 
-            const t = new Date(past10Hrs[i]);
+    let DBpast10Hrs = [new Date(apiUpdateTime2 - 3600000)];
+    for (var i = 0; i < 9; i++) {
+        DBpast10Hrs.unshift(new Date(DBpast10Hrs[0] - 3600000));
+    }
+
+
+    let dbData = await WaitingTimeModel
+        .find({
+            locationId: req.params.locId,
+            date: { $in: DBpast10Hrs }
+        })
+        .sort({ date: -1 })
+        .lean();
+
+
+    let dbTimes = [];
+    dbData.forEach(data => {
+        dbTimes.push(data.date.getTime())
+    })
+
+    let links = [];
+    past10Hrs.forEach(time => {
+        if (!dbTimes.includes(time - 900000)) {
+            const t = new Date(time);
+
             let YYYY = t.getFullYear() + "";
             let MM = t.getMonth() + 1;
             if (MM < 10)
@@ -326,11 +351,145 @@ router.get('/api/historical/past-10-hour', (req, res) => {
                 mm = mm + "";
 
             let dateFormat = YYYY + MM + DD + "-" + hh + mm;
-            link += dateFormat;
-            links.push(link);
+            links.push(HISTORY_API_LINK + dateFormat);
         }
     })
+
+    console.log("links", links)
+
+    let finalData = dbData;
+
+    let results = await Promise.all(
+        links.map(async (link) => {
+            try {
+                const result = await fetch(link);
+                return result.json();
+            } catch (err) {
+                console.log("fetch link error ", err, link)
+            }
+        })
+    );
+
+    results.forEach(result => {
+        let apiTime = new Date(convertDateMongoose(result['updateTime']));
+        result['waitTime'].forEach((element, index) => {
+            let time = element['topWait'];
+            updateWaitTime(index, time, apiTime);
+        })
+
+        finalData.push({
+            "date": new Date(convertDateMongoose(result['updateTime'])),
+            "waitingTime": result["waitTime"][req.params.locId]["topWait"],
+        })
+    })
+
+
+
+
+    return res.status(200).json({ code: 2, finalData: finalData, description: "get past-10-hour successfully." })
+
+
 })
+
+router.get('/api/historical/past-7-day/:locId', async (req, res) => {
+    let HosData = await retrieveHospitalData.getHospData();
+    let apiUpdateTime = new Date(convertDateMongoose(HosData['updateTime']));
+    let apiUpdateTime2 = apiUpdateTime;
+
+
+    let past7Days = [apiUpdateTime - 85500000];
+    for (var i = 0; i < 6; i++) {
+        past7Days.unshift(past7Days[0] - 86400000);
+    }
+
+    let DBpast7Days = [new Date(apiUpdateTime2 - 86400000)];
+    for (var i = 0; i < 6; i++) {
+        DBpast7Days.unshift(new Date(DBpast7Days[0] - 86400000));
+    }
+
+
+    let dbData = await WaitingTimeModel
+        .find({
+            locationId: req.params.locId,
+            date: { $in: DBpast7Days }
+        })
+        .sort({ date: -1 })
+        .lean();
+
+
+    let dbTimes = [];
+    dbData.forEach(data => {
+        dbTimes.push(data.date.getTime())
+    })
+
+    let links = [];
+    DBpast7Days.forEach(time => {
+        if (!dbTimes.includes(time - 900000)) {
+            const t = new Date(time);
+
+            let YYYY = t.getFullYear() + "";
+            let MM = t.getMonth() + 1;
+            if (MM < 10)
+                MM = "" + "0" + MM;
+            else
+                MM = MM + "";
+            let DD = t.getDate();
+            if (DD < 10)
+                DD = "" + "0" + DD;
+            else
+                DD = DD + "";
+            let hh = t.getHours();
+            if (hh < 10)
+                hh = "" + "0" + hh;
+            else
+                hh = hh + "";
+            let mm = t.getMinutes();
+            if (mm < 10)
+                mm = "" + "0" + mm;
+            else
+                mm = mm + "";
+
+            let dateFormat = YYYY + MM + DD + "-" + hh + mm;
+            links.push(HISTORY_API_LINK + dateFormat);
+        }
+    })
+
+    console.log("links", links)
+
+    let finalData = dbData;
+
+    let results = await Promise.all(
+        links.map(async (link) => {
+            try {
+                const result = await fetch(link);
+                return result.json();
+            } catch (err) {
+                console.log("fetch link error ", err, link)
+            }
+        })
+    );
+
+    results.forEach(result => {
+        let apiTime = new Date(convertDateMongoose(result['updateTime']));
+        result['waitTime'].forEach((element, index) => {
+            let time = element['topWait'];
+            updateWaitTime(index, time, apiTime);
+        })
+
+        finalData.push({
+            "date": new Date(convertDateMongoose(result['updateTime'])),
+            "waitingTime": result["waitTime"][req.params.locId]["topWait"],
+        })
+    })
+
+
+
+
+    return res.status(200).json({ code: 2, finalData: finalData, description: "get past-7-days successfully." })
+
+
+})
+
 
 
 router.get('/api/historical/past-7-day', (req, res) => {
@@ -410,17 +569,17 @@ router.put('/api/admin/refresh', authenticateJWT, (req, res) => {
 });
 
 router.post('/api/admin/user', authenticateJWT, (req, res) => {
-	const decoded = req.decoded;
+    const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "create user permission denied." });
 
-	if (!req.body.username || !req.body.password){
-		return res.status(400).json({ code: 1, description: "Please enter Username/Password to create new user" });
-	}
+    if (!req.body.username || !req.body.password) {
+        return res.status(400).json({ code: 1, description: "Please enter Username/Password to create new user" });
+    }
 
     bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
-		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+        if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
 
-		UserModel.findOne({ 'userName': req.body.username }, function (err, user) {
+        UserModel.findOne({ 'userName': req.body.username }, function (err, user) {
             if (err) return res.status(500).json({ code: 0, error: err, description: "find exist user error" });
             if (user) return res.status(400).json({ code: 1, description: "user name already used." });
 
@@ -452,22 +611,22 @@ router.get('/api/admin/user', authenticateJWT, (req, res) => {
 });
 
 router.put('/api/admin/user', authenticateJWT, (req, res) => {
-	const decoded = req.decoded;
+    const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "update user permission denied." });
 
-	if (!req.body.username && !req.body.password){
-		return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
-	}
+    if (!req.body.username && !req.body.password) {
+        return res.status(400).json({ code: 1, description: "Please enter Username/Password to update" });
+    }
 
     bcrypt.hash(req.body.password, saltRounds, function (err, hashpw) {
-		if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
+        if (err) return res.status(500).json({ code: 0, error: err, description: "hash password error" });
 
-		var uSet = {};
+        var uSet = {};
 
-		if (req.body.username) uSet.userName = req.body.username;
-		if (req.body.password) uSet.hashedPassword = hashpw;
+        if (req.body.username) uSet.userName = req.body.username;
+        if (req.body.password) uSet.hashedPassword = hashpw;
 
-		uSet = { $set: uSet }
+        uSet = { $set: uSet }
 
         UserModel.updateOne({ 'userId': req.body.uid }, uSet, function (err, user) {
             if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });
@@ -479,12 +638,12 @@ router.put('/api/admin/user', authenticateJWT, (req, res) => {
 });
 
 router.delete('/api/admin/user', authenticateJWT, (req, res) => {
-	const decoded = req.decoded;
+    const decoded = req.decoded;
     if (!decoded.admin) return res.status(400).json({ code: 1, description: "delete user permission denied." });
 
-	if (!req.body.uid){
-		return res.status(400).json({ code: 1, description: "cannot get uid from request" });
-	}
+    if (!req.body.uid) {
+        return res.status(400).json({ code: 1, description: "cannot get uid from request" });
+    }
 
     UserModel.deleteOne({ 'userId': req.body.uid }, function (err, user) {
         if (err) return res.status(500).json({ code: 0, error: err, description: "database error" });

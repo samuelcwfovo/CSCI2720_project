@@ -13,8 +13,9 @@
 }
 
 @media (min-width:992px) {
-    .MUIDataTable-responsiveBase-5 {
-        height  : calc(100vh - 15rem) !important;
+
+    .MuiToolbar-root+div+div {
+        height  : calc(100vh - 15.5rem) !important;
         overflow: scroll;
     }
 }
