@@ -138,14 +138,12 @@ class UserManage extends React.Component {
                             <Dropdown.Header>
                                 <form id="create">
                                     <div className="py-3 mx-3 width-auto">
-                                        <label for="new-username">New Username</label>
+                                        <label htmlFor="new-username">New Username</label>
                                         <input type="text" name="username" className="form-control" id="update-username" placeholder="New Username" onInput={(e) => e.target.setCustomValidity('')} />
                                     </div>
 
-                                    <div className="py-3 mx-3 width-auto">Or</div>
-
                                     <div className="py-3 mx-3 width-auto">
-                                        <label for="new-password">New Password</label>
+                                        <label htmlFor="new-password">New Password</label>
                                         <input type="password" name="password" className="form-control" id="update-password" placeholder="New Password" />
                                     </div>
                                     <div className="py-5 mx-3">
