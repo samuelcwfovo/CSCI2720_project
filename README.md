@@ -16,8 +16,12 @@
 1. cd /src<br>
 2. Install all node module: **npm install**
 3. Set Up **PORT** and **DB_URL** in **src/.env**
-4. (Development envirnment) **npm run dev** / (Production envirnment) **npm run build** => (Start node server) **npm run start**
-5. Browser access: **http://127.0.0.1:PORT/** 
+4. Development envirnment
+   - **npm run dev**
+6. Production envirnment
+   - Building code: **npm run build**
+   - Start node server: **npm run start**
+7. Browser access: **http://127.0.0.1:PORT/** 
 
 ## Screen Shot
 
