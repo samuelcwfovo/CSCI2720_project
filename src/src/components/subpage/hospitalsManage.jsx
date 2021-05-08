@@ -1,3 +1,10 @@
+//---------------------------------------------------
+// Cheng Yun Chueng 1155109570
+// Wong Kong Wa 1155127049
+// Chow Wang Faat 1155115793
+// Lau Pak Hei Anson 1155158646
+//---------------------------------------------------
+
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 
@@ -96,10 +103,10 @@ class HospitalsManage extends React.Component {
                 }
                 if (res.code === 1) {
                     console.log("create hospital failed", res)
-                    alert("Please enter valid data to create user");
+                    alert("Please enter valid data to create hospital");
                 }
                 if (res.code === 2) {
-                    console.log("create user succeeded", res)
+                    console.log("create hospital succeeded", res)
                     alert("New Hospital Created");
                     this.getHospital();
                 }
