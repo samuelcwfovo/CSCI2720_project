@@ -38,7 +38,7 @@ const App = () => {
                     <PrivateRoute path="/dashboard" component={Dashboard} />
 
 
-                    <PrivateRoute exact strict path="/"  >
+                    <PrivateRoute path="/" >
                         <Redirect to='/dashboard' />
                     </PrivateRoute>
 
