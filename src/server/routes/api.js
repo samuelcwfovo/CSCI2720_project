@@ -398,7 +398,7 @@ router.get('/api/historical/past-7-day/:locId', async (req, res) => {
     let apiUpdateTime2 = apiUpdateTime;
 
 
-    console.log("apiUpdateTime",apiUpdateTime)
+    console.log("apiUpdateTime", apiUpdateTime)
     let past7Days = [new Date(apiUpdateTime - 85500000)];
     for (var i = 0; i < 6; i++) {
         past7Days.unshift(new Date(past7Days[0] - 86400000));
@@ -480,7 +480,7 @@ router.get('/api/historical/past-7-day/:locId', async (req, res) => {
 
         finalData.push({
             "date": new Date(convertDateMongoose(result['updateTime'])),
-            "waitingTime": result["waitTime"][req.params.locId]["topWait"],
+            "waitingTime": result["waitTime"][req.params.locId] ? result["waitTime"][req.params.locId]["topWait"] : "",
         })
     })
 

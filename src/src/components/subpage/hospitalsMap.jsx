@@ -105,7 +105,6 @@ const MapContent = (props) => {
                     });
                 };
 
-                console.log("123 ", element.waitTime)
                 let div = document.createElement('div');
                 div.className = "marker-content";
                 div.innerHTML = '<p>' + element.name + '</p>' + '<p>' + element.waitTime.waitingTime + '</p>';
