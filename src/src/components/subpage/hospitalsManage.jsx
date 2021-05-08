@@ -103,10 +103,10 @@ class HospitalsManage extends React.Component {
                 }
                 if (res.code === 1) {
                     console.log("create hospital failed", res)
-                    alert("Please enter valid data to create user");
+                    alert("Please enter valid data to create hospital");
                 }
                 if (res.code === 2) {
-                    console.log("create user succeeded", res)
+                    console.log("create hospital succeeded", res)
                     alert("New Hospital Created");
                     this.getHospital();
                 }
