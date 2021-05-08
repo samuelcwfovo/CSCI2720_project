@@ -65,7 +65,7 @@ function PrivateRoute({ children, ...rest }) {
         console.log(rest)
         return (
             <Route {...rest}>
-                <Redirect to='/login' />
+                {/* <Redirect to='/login' /> */}
                 <Redirect
                     to={{
                         pathname: "/login",

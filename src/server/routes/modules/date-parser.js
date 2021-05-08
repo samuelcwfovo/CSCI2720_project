@@ -13,12 +13,12 @@ function timeConvert(time) {
     let m = time.slice(-2);
     time = time.slice(0, -2);
     let hr = Number(time.slice(0, sepPos));
-    let min = time.slice(sepPos+1);
+    let min = time.slice(sepPos + 1);
 
-    if (m == 'pm') {hr += 12;}
-    else if (hr == 12 && m == 'am') {hr = '00';}
-    else if (hr < 10) {hr = '0' + String(hr);}
-    if (min.length == 1) {min = '0' + min;}
+    if (m == 'pm' && (hr != 12)) { hr += 12; }
+    else if (hr == 12 && m == 'am') { hr = '00'; }
+    else if (hr < 10) { hr = '0' + String(hr); }
+    if (min.length == 1) { min = '0' + min; }
     return `${hr}:${min}:00`;
 }
 
@@ -28,17 +28,17 @@ function timeConvert(time) {
 function convertDateMongoose(dateStr) {
     let sepPos = dateStr.search('/');
     let d = dateStr.slice(0, sepPos);
-    dateStr = dateStr.slice(sepPos+1)
+    dateStr = dateStr.slice(sepPos + 1)
     sepPos = dateStr.search('/');
     let m = dateStr.slice(0, sepPos);
-    let y = dateStr.slice(sepPos+1, sepPos + 5);
-    let time = dateStr.slice(sepPos+6)
-     
+    let y = dateStr.slice(sepPos + 1, sepPos + 5);
+    let time = dateStr.slice(sepPos + 6)
 
-    if (m.length == 1) {m = '0' + m;}
-    if (d.length == 1) {d = '0' + d;}
+
+    if (m.length == 1) { m = '0' + m; }
+    if (d.length == 1) { d = '0' + d; }
 
     return `${y}-${m}-${d}T${timeConvert(time)}.000+08:00`;
 }
 
-module.exports = {timeConvert, convertDateMongoose};
+module.exports = { timeConvert, convertDateMongoose };
