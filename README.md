@@ -1,26 +1,31 @@
 # CSCI2720_project
 
-## Setup Method
-**Ray: "The method was found by myself. Since I am bad (taken much time to figure out how to setup), the setup method might not be completed and correct. If there is any mistake, the initializer, Samuel or anyone else please feel free to correct the setup method. Thank you very much!"**<br><br>
-**The setup is hosted locally on Windows. Ignore the setup method if you have already setup everything**<br>
-1. Install Node.js for Windows
-2. Install Mongodb for Windows
-3. Download the whole set from Github<br>
-4. Unzip the locate /src in your custom directory<br>
-5. Use cmd to cd to /*custom directory*/src<br>
-6. Install all node module: **npm install**
-7. Development envirnment: **npm run dev** (all stuff will auto start. and it will auto detect server/client side code change)
-8. Production envirnment: **npm run build**
-9. cd to /server and run the server by: **node index.js** (only when you need to run it on Production envirnment and node server wasn't start)
-10. Pray that the server is successfully setup
-11. Use browser: **http://127.0.0.1:2060/** to check whether it is successful
-=======
+## AE Time
+ - build a webapplication for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**
 
-## Tasks
-**Ray: "Feel free to add missing tasks if there is one!"**<br><br>
+## Tech We use
+1. Express.js
+2. Webpack js
+3. React js
+
+## Require Environment
+1. Node.js
+2. MongoDB
+
+## Setup Method
+1. cd /src<br>
+2. Install all node module: **npm install**
+3. Set Up **PORT** and **DB_URL** in **src/.env**
+4. (Development envirnment) **npm run dev** / (Production envirnment) **npm run build** => (Start node server) **npm run start**
+5. Browser access: **http://127.0.0.1:PORT/** 
+
+## Screen Shot
+
+
+## Required Tasks <br>
 #### Generals
-- [ ] Create chart: Waiting time in the past 10 hours
-- [ ] Create chart: Waiting time in this hour of past 7 days
+- [x] Create chart: Waiting time in the past 10 hours
+- [x] Create chart: Waiting time in this hour of past 7 days
 - [x] Setup everything on one of our 2720 VM after all codes are completed
 
 #### User Actions

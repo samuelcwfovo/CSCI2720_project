@@ -15,7 +15,7 @@ Node Server Setup Guide (local):
 2. cd to /*custom directory*/src
 3. Use command: npm install
 4. Use command: npm run build
-5. cd to /*custom directory*/src/server and use command: node index.js
+5. Use command: npm run start
 6. Visit http://127.0.0.1:2060/
 
 ---------------------------------------------------------------------------------------------------------------------------
