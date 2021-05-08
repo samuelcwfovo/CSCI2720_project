@@ -16,7 +16,8 @@
 1. cd /src<br>
 2. Install all node module: **npm install**
 3. Set Up **PORT** and **DB_URL** in **src/.env**
-4. Development envirnment
+4. Set UP Google Map key in src/src/assets/key.jsx
+5. Development envirnment
 ```
 npm run dev
 ```
