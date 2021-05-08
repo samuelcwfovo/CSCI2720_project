@@ -17,7 +17,9 @@
 2. Install all node module: **npm install**
 3. Set Up **PORT** and **DB_URL** in **src/.env**
 4. Development envirnment
-```npm run dev```
+```
+npm run dev
+```
 6. Production envirnment
 ```bash
 npm run build # build code 
