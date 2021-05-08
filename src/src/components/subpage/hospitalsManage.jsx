@@ -101,7 +101,7 @@ class HospitalsManage extends React.Component {
                 if (res.code === 2) {
                     console.log("create user succeeded", res)
                     alert("New Hospital Created");
-                    this.getUser();
+                    this.getHospital();
                 }
             }).catch((error) => console.error(error));
     }
