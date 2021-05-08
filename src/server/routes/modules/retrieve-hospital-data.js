@@ -116,17 +116,5 @@ function findHospLocation(hospName) {
     return hospLocation[hospName];
 }
 
-// Return a promise containing target hospital coordinates in json
-/* Json Schema:
-    lat: Number,
-    lng: Number
-*/
-function getHospCoordinate(hospName) {
-    hospName = hospName.replace(' ', '+');
-    let URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${hospName}&key=${API_KEY}`
-    return fetch(URL)
-        .then(res => res.json())
-        .then(res => res.results[0].geometry.location);
-}
 
-module.exports = { getHospData, findHospDataByName, findHospLocation, getHospCoordinate };
+module.exports = { getHospData, findHospDataByName, findHospLocation };

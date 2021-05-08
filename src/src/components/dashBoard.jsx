@@ -6,7 +6,7 @@ import {
     PeopleAltOutlined, Menu, AccountCircle, Fullscreen, FullscreenExit
 } from '@material-ui/icons';
 
-import { Link, Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Link, Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
 
 import { AuthContext } from '../context/ControlContext.jsx';
 
@@ -204,8 +204,8 @@ const Dashboard = () => {
                         <Route path="/dashboard/hospitals/:locId" component={HospitalDetail} />
                         <Route path={"/dashboard/hospitals"} component={HospitalsMap} />
                         <Route path={"/dashboard/favourite"} component={FavouritePlace} />
-                        <Route path={"/dashboard/places-manage"} component={HospitalsManage} />
-                        <Route path={"/dashboard/users-manage"} component={UserManage} />
+                        <AdminRoute path={"/dashboard/places-manage"} component={HospitalsManage} />
+                        <AdminRoute path={"/dashboard/users-manage"} component={UserManage} />
                         <Route exact path="/dashboard">
                             <Redirect to='/dashboard/hospitals' />
                         </Route>
@@ -216,6 +216,30 @@ const Dashboard = () => {
 
         </div>
     )
+}
+
+function AdminRoute({ children, ...rest }) {
+    let isAdmin = sessionStorage.getItem('admin') == 'true' ? true : false;
+    let location = useLocation()
+
+    if (!isAdmin) {
+        console.log("not auth to admin route")
+        return (
+            <Route {...rest}>
+                {/* <Redirect to='/login' /> */}
+                <Redirect
+                    to={{
+                        pathname: "/dashboard",
+                        state: { from: location.pathname }
+                    }}
+                />
+            </Route>
+        )
+    }
+
+    return (
+        <Route {...rest} render={() => children} />
+    );
 }
 
 export default Dashboard;
