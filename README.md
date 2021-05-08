@@ -17,13 +17,15 @@
 2. Install all node module: **npm install**
 3. Set Up **PORT** and **DB_URL** in **src/.env**
 4. Development envirnment
-   - **npm run dev**
+   - ```npm run dev```
 6. Production envirnment
-   - Building code: **npm run build**
-   - Start node server: **npm run start**
-7. Browser access: **http://127.0.0.1:PORT/** 
+```bash
+npm run build # build code s
+npm run start # run node server
+```
+1. Browser access: **http://127.0.0.1:PORT/** 
 
-## Screen Shot
+## Screens Shot
 
 
 ## Required Tasks <br>
