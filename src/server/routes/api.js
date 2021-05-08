@@ -380,7 +380,7 @@ router.get('/api/historical/past-10-hour/:locId', async (req, res) => {
 
         finalData.push({
             "date": new Date(convertDateMongoose(result['updateTime'])),
-            "waitingTime": result["waitTime"][req.params.locId]["topWait"],
+            "waitingTime": result["waitTime"][req.params.locId] ? result["waitTime"][req.params.locId]["topWait"] : "",
         })
     })
 
