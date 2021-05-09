@@ -8,12 +8,15 @@ const htmlPlugin = new HtmlWebPackPlugin({
 });
 module.exports = {
   entry: "./src/index.jsx",
-  output: { // NEW
+  output: {
     path: path.join(__dirname, 'dist'),
     publicPath: "/",
     filename: "dist/bundle.js"
-  }, // NEW Ends
-  plugins: [htmlPlugin, new BundleAnalyzerPlugin()],
+  },
+  plugins: [
+    htmlPlugin,
+    // new BundleAnalyzerPlugin()
+  ],
   module: {
     rules: [
       {
@@ -40,5 +43,5 @@ module.exports = {
 
     ]
   },
-  watch: true,
+  // watch: true,
 };

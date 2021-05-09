@@ -20,3 +20,4 @@ Node Server Setup Guide (local):
 
 ---------------------------------------------------------------------------------------------------------------------------
 Site URL: http://csci2720-g60.cse.cuhk.edu.hk/
+GitHub URL: https://github.com/samuelcwfovo/CSCI2720_project
