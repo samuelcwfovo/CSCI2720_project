@@ -16,7 +16,8 @@
 1. cd /src<br>
 2. Install all node module: **npm install**
 3. Set Up **PORT** and **DB_URL** in **src/.env**
-4. Development envirnment
+4. Set UP Google Map key in src/src/assets/key.jsx
+5. Development envirnment
 ```
 npm run dev
 ```
@@ -28,7 +29,21 @@ npm run start # run node server
 1. Browser access: **http://127.0.0.1:PORT/** 
 
 ## Screens Shot
+#### Desktop
+<p float="left">
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/destop.png" alt="Desktop" width="200" height= "112"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/destop-login.png" alt="Desktop-login" width="200" height= "112"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/destop-main.png" alt="Desktop-main" width="200" height= "112"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/destop-detail.png" alt="Desktop-detail" width="200" height= "112"/>
+</p>
 
+#### Mobile
+<p float="left">
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/mobile.png" alt="mobile" width="100"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/mobile-login.png" alt="mobile-login" width="100"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/mobile-main.png" alt="mobile-main" width="100"/>
+ <img src="https://github.com/samuelcwfovo/CSCI2720_project/blob/main/markdown-png/mobile-detail.png" alt="mobile-detail" width="100"/>
+</p>
 
 ## Required Tasks <br>
 #### Generals
