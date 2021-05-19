@@ -56,7 +56,7 @@ async function connectToDatabase() {
         //         db: client.db("test"),
         //     }
         // })
-        cached.promise = mongoose.connect("mongodb+srv://samuel:534106@auth.v9g56.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", opts).then((client) => {
+        cached.promise = mongoose.connect("mongodb+srv://samuel:534106@cluster0.tqy8t.mongodb.net/project?retryWrites=true&w=majority", opts).then((client) => {
             return {
                 client
             }
