@@ -27,10 +27,47 @@ const { convertDateMongoose } = require('./modules/date-parser');
 router.use(bodyParser.json());
 router.use(cookieParser());
 
-mongoose.connect(process.env.DB_URL);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Connection error:'));
-db.once('open', function () { console.log("Database Connected."); });
+// mongoose.connect(process.env.DB_URL);
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'Connection error:'));
+// db.once('open', function () { console.log("Database Connected."); });
+
+
+let cached = global.mongo
+
+if (!cached) {
+    cached = global.mongo = { conn: null, promise: null }
+}
+
+async function connectToDatabase() {
+    if (cached.conn) {
+        return cached.conn
+    }
+
+    if (!cached.promise) {
+        const opts = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }
+
+        // cached.promise = MongoClient.connect("mongodb+srv://samuel:534106@auth.v9g56.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", opts).then((client) => {
+        //     return {
+        //         client,
+        //         db: client.db("test"),
+        //     }
+        // })
+        cached.promise = mongoose.connect("mongodb+srv://samuel:534106@auth.v9g56.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", opts).then((client) => {
+            return {
+                client
+            }
+        })
+    }
+    cached.conn = await cached.promise
+    return cached.conn
+}
+
+
+const db = connectToDatabase();
 
 
 
