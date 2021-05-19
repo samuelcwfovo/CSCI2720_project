@@ -1,12 +1,15 @@
 # CSCI2720_project
 
 ## AE Time
- - build a webapplication for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**
+ - build a web application for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**
 
-## Tech We use
+## npm package we use
 1. Express.js
 2. Webpack js
 3. React js
+4. react router dom
+5. Google map react
+6. jwt token
 
 ## Require Environment
 1. Node.js
