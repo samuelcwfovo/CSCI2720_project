@@ -1,13 +1,13 @@
 # CSCI2720_project
 
 ## AE Time
- - build a web application for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**
+ - Build a web application for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**.
 
-## Host
+## Hosting
  - Link: https://csci-2720-project.vercel.app/
- - I hosted it on amazon using aws serverless service.  
+ - I hosted it on amazon using aws serverless service.  At first I deploy it on google clould platform with docker file. Then I found that aws is better  
 
-## npm package we use
+## npm package I use
 1. Express.js
 2. Webpack js
 3. React js
