@@ -73,6 +73,7 @@ async function connectToDatabase() {
 const db = connectToDatabase();
 
 router.use(async function (req, res, next) {
+    console.log("connect to db");
     await connectToDatabase();
     next();
 });
