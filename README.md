@@ -2,10 +2,13 @@
 
 ## AE Time
  - Build a web application for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**.
+ - This is a group project in CUHK course CSCI2720 (Building Web Applications). Alought it is a group project, i did almost 80~90% part since my poor groupmates have no idea how to handle react/nodeJS (or maybe they are busying in other stuff). Only 1 gpmate can help me code the hospital/user CRUD part. 
 
 ## Hosting
  - Link: https://csci-2720-project.vercel.app/
- - I hosted it on amazon using aws serverless service.  At first I deploy it on google clould platform with docker file. Then I found that aws is better  
+ - I hosted it on Amazon using aws serverless service with Vercel platform. At first I deploy it on google clould platform with docker file. Then I found that serverless is better since serverless are free forever.
+ - Sometime it load a bit slow, that is because serverless need time to warm up.
+ - It was quite fun to learn and deploy this project to serverless.
 
 ## npm package I use
 1. Express.js
@@ -14,6 +17,7 @@
 4. react router dom
 5. Google map react
 6. jwt token
+7. ...
 
 ## Require Environment
 1. Node.js
