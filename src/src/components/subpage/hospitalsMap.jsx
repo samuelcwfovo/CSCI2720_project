@@ -123,6 +123,7 @@ const MapContent = (props) => {
         })
     };
 
+    console.log("GoogleMapKey",GoogleMapKey)
 
     return (
         <div className="hospitals-map-content">
