@@ -5,6 +5,6 @@
 // Lau Pak Hei Anson 1155158646
 //---------------------------------------------------
 
-import React from "react";
+// import React from "react";
 
-export const GoogleMapKey = "";
+export const GoogleMapKey = "AIzaSyDQXRchSXkvgxWwTM6NQ7SLTriqYWJJwP0";
