@@ -3,6 +3,10 @@
 ## AE Time
  - build a web application for checking Hong Kong Emergency department waiting time. You can get the detail from **Project Document.pdf**
 
+## Host
+ - Link: https://csci-2720-project.vercel.app/
+ - I hosted it on amazon using aws serverless service.  
+
 ## npm package we use
 1. Express.js
 2. Webpack js
