@@ -33,42 +33,6 @@ router.use(cookieParser());
 // db.once('open', function () { console.log("Database Connected."); });
 
 
-let cached = global.mongo
-
-if (!cached) {
-    cached = global.mongo = { conn: null, promise: null }
-}
-
-async function connectToDatabase() {
-    if (cached.conn) {
-        return cached.conn
-    }
-
-    if (!cached.promise) {
-        const opts = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-
-        // cached.promise = MongoClient.connect("mongodb+srv://samuel:534106@auth.v9g56.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", opts).then((client) => {
-        //     return {
-        //         client,
-        //         db: client.db("test"),
-        //     }
-        // })
-        cached.promise = mongoose.connect("mongodb+srv://samuel:534106@cluster0.tqy8t.mongodb.net/project?retryWrites=true&w=majority", opts).then((client) => {
-            return {
-                client
-            }
-        })
-    }
-    cached.conn = await cached.promise
-    return cached.conn
-}
-
-
-const db = connectToDatabase();
-
 
 
 var Schema = mongoose.Schema;
