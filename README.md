@@ -6,6 +6,7 @@
 
 ## Hosting
  - Link: https://csci-2720-project.vercel.app/
+ - You can login with admin/admin to use the admin panel
  - I hosted it on Amazon using aws serverless service with Vercel platform. At first I deploy it on google clould platform with docker file. Then I found that serverless is better since serverless are free forever.
  - Sometime it load a bit slow, that is because it need to create DB connection on every api request (cached already, but it can't last for long period).
  - It was quite fun to learn and deploy this project to serverless.
