@@ -10,7 +10,7 @@
  - Sometime it load a bit slow, that is because it need to create DB connection on every api request (cached already, but it can't last for long period).
  - It was quite fun to learn and deploy this project to serverless.
 
-## npm package I use
+## Npm package used
 1. Express.js
 2. Webpack js
 3. React js
